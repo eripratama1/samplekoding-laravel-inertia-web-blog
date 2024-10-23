@@ -14,7 +14,7 @@ import { PropsWithChildren, ReactNode, useState } from 'react';
 export default function Authenticated({ header, children }: PropsWithChildren<{ header?: ReactNode }>) {
 
     const user = usePage().props.auth.user;
-    console.log("result props user", user);
+    // console.log("result props user", user);
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
@@ -196,6 +196,13 @@ export default function Authenticated({ header, children }: PropsWithChildren<{ 
                         className="text-foreground transition-colors hover:text-foreground"
                     >
                         Dashboard
+                    </Link>
+
+                    <Link
+                        href={route('category.index')}
+                        className="text-foreground transition-colors hover:text-foreground"
+                    >
+                        Categories
                     </Link>
 
                 </nav>
