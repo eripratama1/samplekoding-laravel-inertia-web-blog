@@ -198,12 +198,13 @@ export default function Authenticated({ header, children }: PropsWithChildren<{ 
                         Dashboard
                     </Link>
 
-                    <Link
+                    <ResponsiveNavLink
                         href={route('category.index')}
                         className="text-foreground transition-colors hover:text-foreground"
+                        active={route().current('category*')}
                     >
                         Categories
-                    </Link>
+                    </ResponsiveNavLink>
 
                 </nav>
 

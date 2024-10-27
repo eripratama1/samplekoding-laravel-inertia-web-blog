@@ -15,7 +15,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Backend/Category/Index');
+        return Inertia::render('Backend/Category/Index',[
+            'category' => Category::latest()->get()
+        ]);
     }
 
     /**
