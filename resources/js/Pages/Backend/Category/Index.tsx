@@ -32,16 +32,20 @@ export default function Index({ category }: CategoryIndexProps) {
 
                             <TableHeader>
                                 <TableRow>
+                                    <TableHead>No</TableHead>
                                     <TableHead>Nama Kategori</TableHead>
                                     <TableHead>Options</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {category.map((category) => (
+                                {category.map((category, index) => (
                                     <TableRow key={category.id}>
+                                        <TableCell className="font-medium">{index + 1}</TableCell>
                                         <TableCell className="font-medium">{category.title}</TableCell>
                                         <TableCell className='flex gap-1'>
-                                            <Button size={"sm"}>Edit</Button>
+                                            <Button size={"sm"}>
+                                                <Link href={route('category.edit',category.id)}>Edit</Link>
+                                            </Button>
                                             <Button size={"sm"} variant={"destructive"}>Delete</Button>
                                         </TableCell>
                                     </TableRow>

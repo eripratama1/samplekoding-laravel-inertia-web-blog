@@ -49,17 +49,21 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        return Inertia::render('Backend/Category/Edit',[
+            'category' => Category::findOrFail($id)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CategoryRequest $request, Category $category)
     {
-        //
+        $data = $request->validated();
+        $category->update($data);
+        return to_route('category.index');
     }
 
     /**
