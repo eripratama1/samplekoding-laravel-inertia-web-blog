@@ -1,10 +1,12 @@
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import Authenticated from '@/Layouts/AuthenticatedLayout'
 import { Category } from '@/types'
-import { Head, Link } from '@inertiajs/react'
+import { Head, Link, router } from '@inertiajs/react'
 import React from 'react'
+import { toast } from 'sonner'
 
 interface CategoryIndexProps {
     category: Category[]
@@ -13,6 +15,18 @@ interface CategoryIndexProps {
 export default function Index({ category }: CategoryIndexProps) {
 
     console.log('result props category', category);
+
+    // Fungsi delete data category yang akan dijalankan saat AlertDialogAction di klik
+    const handleDelete = (id: number) => {
+        router.delete(route('category.destroy', id), {
+            onSuccess: () => {
+                toast.success('Category deleted');
+            },
+            onError: () => {
+                toast.error('Category deleted');
+            }
+        })
+    }
 
     return (
         <Authenticated>
@@ -44,9 +58,30 @@ export default function Index({ category }: CategoryIndexProps) {
                                         <TableCell className="font-medium">{category.title}</TableCell>
                                         <TableCell className='flex gap-1'>
                                             <Button size={"sm"}>
-                                                <Link href={route('category.edit',category.id)}>Edit</Link>
+                                                <Link href={route('category.edit', category.id)}>Edit</Link>
                                             </Button>
-                                            <Button size={"sm"} variant={"destructive"}>Delete</Button>
+
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button variant="destructive" size="sm">Delete</Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This action cannot be undone. This will permanently delete your
+                                                            account and remove your data from our servers.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={() => handleDelete(category.id)}>
+                                                            Continue
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+
                                         </TableCell>
                                     </TableRow>
                                 ))}
