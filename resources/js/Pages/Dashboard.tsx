@@ -2,10 +2,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { DollarSign } from 'lucide-react';
+import { PageProps } from '@/types';
 
-export default function Dashboard() {
+// Menerima props 'auth' yang bertipe 'PageProps'
+// Tipe PageProps mendefinisikan struktur data yang diterima oleh auth,
+// yang berisi informasi tentang pengguna yang login.
+export default function Dashboard({ auth }: PageProps) {
     return (
         <AuthenticatedLayout
+            user={auth.user}
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                     Dashboard

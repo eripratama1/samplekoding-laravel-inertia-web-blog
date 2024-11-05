@@ -4,16 +4,16 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Authenticated from '@/Layouts/AuthenticatedLayout'
-import { Category } from '@/types'
 import { Head, useForm } from '@inertiajs/react'
 import React, { FormEventHandler } from 'react'
 import { toast } from 'sonner'
+import { Category, PageProps } from '@/types'
 
-interface CategoryEditProps {
+interface CategoryEditProps extends PageProps {
     category: Category
 }
 
-export default function Edit({ category }: CategoryEditProps) {
+export default function Edit({ category, auth }: CategoryEditProps) {
 
     // Inisialisasi form menggunakan useForm dengan nilai awal untuk field 'title' dari props category
     // Dan menambhkan method PUT
@@ -40,7 +40,7 @@ export default function Edit({ category }: CategoryEditProps) {
     }
 
     return (
-        <Authenticated>
+        <Authenticated user={auth.user}>
             <Head title='Update Category' />
             <div className='flex justify-center items-center my-6'>
                 <Card className='max-w-lg w-full'>

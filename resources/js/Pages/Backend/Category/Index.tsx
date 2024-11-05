@@ -3,16 +3,20 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import Authenticated from '@/Layouts/AuthenticatedLayout'
-import { Category } from '@/types'
 import { Head, Link, router } from '@inertiajs/react'
 import React from 'react'
 import { toast } from 'sonner'
+import { Category, PageProps } from '@/types'
 
-interface CategoryIndexProps {
+// Mendefinisikan interface 'CategoryIndexProps' lalu memperluas / extends ke interface 'PageProps'
+// Interface ini mendefinisikan properti yang akan diterima komponen, termasuk 'category' dan 'auth' dari PageProps
+interface CategoryIndexProps extends PageProps {
+     // Properti 'category' bertipe array dari interface 'Category'
+    // Array object ini berisi daftar kategori yang akan ditampilkan di halaman
     category: Category[]
 }
 
-export default function Index({ category }: CategoryIndexProps) {
+export default function Index({ category,auth }: CategoryIndexProps) {
 
     console.log('result props category', category);
 
@@ -29,7 +33,7 @@ export default function Index({ category }: CategoryIndexProps) {
     }
 
     return (
-        <Authenticated>
+        <Authenticated user={auth.user}>
             <Head title='List Kategori' />
             <div className='flex justify-center items-center my-10'>
                 <Card className='max-w-xl w-full h-full'>

@@ -16,15 +16,26 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+     // Mendapatkan data user yang sedang login menggunakan helper auth()
+    $user = auth()->user();
+    return Inertia::render('Dashboard', [
+        'auth' => [
+             // Mengirimkan data user yang sedang login
+            'user' => $user,
+
+             // Mengirimkan daftar role yang dimiliki user menggunakan metode getRoleNames()
+            // Metode ini berasal dari Spatie Role Permission
+            'roles' => $user->getRoleNames(),
+        ]
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'role:Admin')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource('category',CategoryController::class);
+    Route::resource('category', CategoryController::class);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
