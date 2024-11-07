@@ -64,13 +64,24 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                     </ResponsiveNavLink>
 
                     {isAdmin && (
-                        <ResponsiveNavLink
-                            href={route('category.index')}
-                            className="text-foreground transition-colors hover:text-foreground"
-                            active={route().current('category*')}
-                        >
-                            Categories
-                        </ResponsiveNavLink>
+                        <>
+                            <ResponsiveNavLink
+                                href={route('category.index')}
+                                className="text-foreground transition-colors hover:text-foreground"
+                                active={route().current('category*')}
+                            >
+                                Categories
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink
+                                href={route('manage-role.index')}
+                                className="text-foreground transition-colors hover:text-foreground text-nowrap"
+                                active={route().current('manage-role*')}
+                            >
+                                Manage Role
+                            </ResponsiveNavLink>
+
+                        </>
                     )}
 
                 </nav>
@@ -98,9 +109,33 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                                 <Package2 className="h-6 w-6" />
                                 <span className="sr-only">Acme Inc</span>
                             </Link>
-                            <Link href={route('dashboard')} className="hover:text-foreground">
+                            <ResponsiveNavLink
+                                href={route('dashboard')}
+                                className="text-foreground transition-colors hover:text-foreground"
+                                active={route().current('dashboard')}
+                            >
                                 Dashboard
-                            </Link>
+                            </ResponsiveNavLink>
+
+                            {isAdmin && (
+                                <>
+                                    <ResponsiveNavLink
+                                        href={route('category.index')}
+                                        className="text-foreground transition-colors hover:text-foreground"
+                                        active={route().current('category*')}
+                                    >
+                                        Categories
+                                    </ResponsiveNavLink>
+
+                                    <ResponsiveNavLink
+                                        href={route('manage-role.index')}
+                                        className="text-foreground transition-colors hover:text-foreground"
+                                        active={route().current('manage-role*')}
+                                    >
+                                        Manage Role
+                                    </ResponsiveNavLink>
+                                </>
+                            )}
                         </nav>
                     </SheetContent>
                 </Sheet>
