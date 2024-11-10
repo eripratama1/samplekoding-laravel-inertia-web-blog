@@ -38,6 +38,10 @@ Route::middleware('auth', 'role:Admin')->group(function () {
 
     Route::resource('category', CategoryController::class);
     Route::resource('manage-role',RoleController::class);
+
+    Route::get('list-users',[RoleController::class,'listUsers'])->name('listUsers');
+    Route::get('set-role/{id}',[RoleController::class,'setRole'])->name('setRole');
+    Route::post('assign-role/{id}',[RoleController::class,'assignRole'])->name('assignRole');
 });
 
 require __DIR__ . '/auth.php';

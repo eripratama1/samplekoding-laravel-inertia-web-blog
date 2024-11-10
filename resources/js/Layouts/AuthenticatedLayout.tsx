@@ -81,6 +81,14 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                                 Manage Role
                             </ResponsiveNavLink>
 
+                            <ResponsiveNavLink
+                                href={route('listUsers')}
+                                className="text-foreground transition-colors hover:text-foreground text-nowrap"
+                                active={route().current('listUsers*')}
+                            >
+                                Manage Users
+                            </ResponsiveNavLink>
+
                         </>
                     )}
 
@@ -133,6 +141,14 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                                         active={route().current('manage-role*')}
                                     >
                                         Manage Role
+                                    </ResponsiveNavLink>
+
+                                    <ResponsiveNavLink
+                                        href={route('listUsers')}
+                                        className="text-foreground transition-colors hover:text-foreground text-nowrap"
+                                        active={route().current('listUsers*')}
+                                    >
+                                        Manage Users
                                     </ResponsiveNavLink>
                                 </>
                             )}
