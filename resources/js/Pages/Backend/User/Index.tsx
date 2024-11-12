@@ -19,7 +19,14 @@ export default function Index({ user, auth }: UserIndexProps) {
 
     // Fungsi remove role dari user yang akan dijalankan saat AlertDialogAction di klik
     const handleDelete = (userId: number, roleId: number) => {
-        //
+        router.delete(route('removeRole', { id: userId, roleId: roleId }), {
+            onSuccess: () => {
+                toast.success('Role removed')
+            },
+            onError: () => {
+                toast.error('Failed to remove role')
+            }
+        })
     }
 
     return (

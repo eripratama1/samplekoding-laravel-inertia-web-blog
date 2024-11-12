@@ -13,11 +13,12 @@ import Authenticated from '@/Layouts/AuthenticatedLayout'
 interface AssignRoleProps extends PageProps {
     user: User;
     roles: Role[];
+    userRole: Role[];
 }
-export default function AssignRole({ auth, user, roles}: AssignRoleProps) {
+export default function AssignRole({ auth, user, roles, userRole }: AssignRoleProps) {
 
     // Menambahkan sebuah state untuk menampung data role yang ada
-    const [selectedRole, setSelectedRole] = useState<string | undefined>(roles.length > 0 ? roles[0].name : '');
+    const [selectedRole, setSelectedRole] = useState<string | undefined>(userRole.length > 0 ? userRole[0].name : '');
     // Fungsi untuk menangani submit form
 
     const handleChange = (roleName: string) => {

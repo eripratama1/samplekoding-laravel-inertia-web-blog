@@ -42,6 +42,7 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     Route::get('list-users',[RoleController::class,'listUsers'])->name('listUsers');
     Route::get('set-role/{id}',[RoleController::class,'setRole'])->name('setRole');
     Route::post('assign-role/{id}',[RoleController::class,'assignRole'])->name('assignRole');
+    Route::delete('/user/{id}/role/{roleId}',[RoleController::class,'removeRole'])->name('removeRole');
 });
 
 require __DIR__ . '/auth.php';

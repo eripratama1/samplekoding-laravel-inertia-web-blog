@@ -96,9 +96,11 @@ class RoleController extends Controller
          */
         $user = User::findOrFail($id);
         $roles = Role::latest()->get();
+        $userRole = $user->roles;
         return Inertia::render('Backend/User/AssignRole',[
             'user' => $user,
             'roles' => $roles,
+            'userRole' => $userRole
         ]);
     }
 
@@ -111,6 +113,14 @@ class RoleController extends Controller
          */
         $user = User::findOrFail($id);
         $user->syncRoles($request->input('roles'));
+        return to_route('listUsers');
+    }
+
+    public function removeRole($id,$roleId)
+    {
+        /** Jalankan proses remove role user */
+        $user = User::findOrFail($id);
+        $user->roles()->detach($roleId);
         return to_route('listUsers');
     }
 }
