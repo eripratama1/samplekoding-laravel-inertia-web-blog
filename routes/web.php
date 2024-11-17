@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\ArticleController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\ProfileController;
@@ -38,6 +39,7 @@ Route::middleware('auth', 'role:Admin')->group(function () {
 
     Route::resource('category', CategoryController::class);
     Route::resource('manage-role',RoleController::class);
+    Route::resource('article',ArticleController::class);
 
     Route::get('list-users',[RoleController::class,'listUsers'])->name('listUsers');
     Route::get('set-role/{id}',[RoleController::class,'setRole'])->name('setRole');

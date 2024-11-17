@@ -89,6 +89,14 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                                 Manage Users
                             </ResponsiveNavLink>
 
+                            <ResponsiveNavLink
+                                href={route('article.index')}
+                                className="text-foreground transition-colors hover:text-foreground"
+                                active={route().current('article*')}
+                            >
+                                Articles
+                            </ResponsiveNavLink>
+
                         </>
                     )}
 
