@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ArticleRequest;
+use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -30,9 +32,22 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ArticleRequest $request)
     {
-        //
+        /**
+         * Validasi data yang diterima berdasarkan aturan di ArticleRequest
+         * Periksa apakah ada file gambar yang diunggah
+         * Simpan data artikel ke database menggunakan model Article
+         */
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->storeAs('public/images',$image->hashName());
+            $data['image'] = $imagePath;
+        }
+        Article::create($data);
+        return to_route('article.index');
     }
 
     /**

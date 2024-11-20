@@ -123,6 +123,7 @@ export default function Login({
                                 <Label htmlFor="email">Email</Label>
                                 <Input
                                     id="email"
+                                    autoFocus
                                     type="text"
                                     value={data.email}
                                     disabled={processing}

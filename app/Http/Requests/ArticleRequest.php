@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class ArticleRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class ArticleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,21 @@ class ArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|min:4',
+            'slug' => "required",
+            'category_id' => 'required',
+            'user_id' => 'required',
+            'content' => 'required|min:4',
+            'image' => 'mimes:png,jpg,jpeg|nullable'
         ];
     }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'slug' => $this->slug ?: Str::slug($this->title)
+        ]);
+    }
+
+
 }

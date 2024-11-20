@@ -38,14 +38,61 @@ interface CreateArticleProps extends PageProps {
 
 export default function Create({ auth, category }: CreateArticleProps) {
 
-    // Inisialisasi form menggunakan useForm dengan nilai awal untuk field 'title' string kosong
+    // Inisialisasi form menggunakan useForm dengan nilai awal untuk tiap field denganstring kosong atau null,
+
     const { data, setData, post, processing, errors } = useForm({
-        title: '',
+        title: '',               // Input untuk judul artikel
+        category_id: '',         // Input untuk kategori artikel
+        content: '',             // Input untuk isi artikel
+        image: null as File | null, // Input untuk file gambar (bisa null)
+        user_id: auth.user.id    // ID user yang membuat artikel
     });
+
+    // Fungsi untuk menangani perubahan input file gambar
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        /**
+         * Ambil file yang diunggah dari event
+         * Periksa apakah file ada
+         * Set file ke dalam state `data.image`
+         */
+        const files = e.target.files;
+        if (files && files[0]) {
+            setData('image', files[0]);
+        }
+    }
 
     // Fungsi untuk menangani submit form
     const submitData: FormEventHandler = (e) => {
         e.preventDefault()
+
+        /**
+         * Buat instance FormData untuk mengirim data termasuk file
+         */
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("content", data.content);
+        formData.append("category)id", data.category_id);
+
+        /**
+         * Jika ada file gambar, tambahkan ke FormData
+         */
+        if (data.image) {
+            formData.append("image", data.image);
+        }
+
+        /**
+         * Kirim data ke server menggunakan fungsi post
+           Fungsi ini akan memanggil endpoint `article.store` di server
+         */
+
+        post(route('article.store'), {
+            onSuccess: () => {
+                toast.success("Article Stored");
+            },
+            onError: () => {
+                toast.error("Failed to store article");
+            }
+        })
     }
 
     return (
@@ -73,7 +120,18 @@ export default function Create({ auth, category }: CreateArticleProps) {
 
                                         <div className='grid gap-2'>
                                             <Label>Select Category</Label>
-                                            <Select>
+                                            <Select
+                                                onValueChange={(value) => {
+                                                 /**
+                                                 * Cari kategori berdasarkan nilai yang dipilih
+                                                 * Jika kategori ditemukan, set ID kategori di data form
+                                                 */
+                                                    const selectedCategory = category.find((category) => category.title === value)
+                                                    if (selectedCategory) {
+                                                        setData("category_id", selectedCategory.id.toString())
+                                                    }
+                                                }}
+                                            >
                                                 <SelectTrigger className='w-full'>
                                                     <SelectValue placeholder="Choose category" />
                                                 </SelectTrigger>
@@ -90,20 +148,19 @@ export default function Create({ auth, category }: CreateArticleProps) {
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
-                                            <InputError message={errors.title} />
+                                            <InputError message={errors.category_id} />
                                         </div>
 
                                         <div className='grid gap-2'>
                                             <Label>Upload Image</Label>
                                             <Input
-                                                name='title'
+                                                name='image'
                                                 type='file'
-                                                value={data.title}
-                                                onChange={(e) => setData('title', e.target.value)}
+                                                onChange={handleImageChange}
                                                 className='w-full my-3'
                                                 disabled={processing}
                                             />
-                                            <InputError message={errors.title} />
+                                            <InputError message={errors.image} />
                                         </div>
                                     </div>
 
@@ -111,6 +168,15 @@ export default function Create({ auth, category }: CreateArticleProps) {
                                         <Label>Content Article</Label>
                                         <CKEditor
                                             editor={ClassicEditor}
+
+                                            onChange={(event, editor) => {
+                                            /**
+                                             * Ambil konten yang dimasukkan oleh user dari editor
+                                             * Simpan konten ke dalam state form menggunakan setData
+                                            */
+                                                const content = editor.getData();
+                                                setData("content", content);
+                                            }}
                                             config={{
                                                 toolbar: {
                                                     items: [
@@ -127,13 +193,14 @@ export default function Create({ auth, category }: CreateArticleProps) {
                                                     ]
                                                 },
                                                 plugins: [
-                                                    Bold, Essentials, Italic,Alignment,CodeBlock,
-                                                    Image,ImageUpload,ImageToolbar,SimpleUploadAdapter,
-                                                    ImageResize,ImageResizeButtons
+                                                    Bold, Essentials, Italic, Alignment, CodeBlock, Paragraph,
+                                                    Image, ImageUpload, ImageToolbar, SimpleUploadAdapter,
+                                                    ImageResize, ImageResizeButtons
                                                 ]
                                             }}
                                         />
                                     </div>
+                                    <InputError message={errors.content} />
 
                                     <Button>Submit</Button>
                                 </form>
