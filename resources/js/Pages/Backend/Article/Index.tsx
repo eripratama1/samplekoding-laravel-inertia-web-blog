@@ -6,12 +6,14 @@ import Authenticated from '@/Layouts/AuthenticatedLayout'
 import { Head, Link, router } from '@inertiajs/react'
 import React from 'react'
 import { toast } from 'sonner'
-import { PageProps } from '@/types'
+import { Article, PageProps } from '@/types'
 
 
-export default function Index({ auth }: PageProps) {
+interface ArticleIndexProps extends PageProps {
+    articles: Article[]
+}
 
-
+export default function Index({ auth, articles }: ArticleIndexProps) {
 
     // Fungsi delete data category yang akan dijalankan saat AlertDialogAction di klik
     const handleDelete = (id: number) => {
@@ -45,17 +47,23 @@ export default function Index({ auth }: PageProps) {
                                 <TableRow>
                                     <TableHead>No</TableHead>
                                     <TableHead>Judul Artikel</TableHead>
+                                    <TableHead>Kategori Artikel</TableHead>
+                                    <TableHead>Cover Image</TableHead>
                                     <TableHead>Options</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            {/* <TableBody>
-                                {category.map((category, index) => (
-                                    <TableRow key={category.id}>
+                            <TableBody>
+                                {articles.map((article, index) => (
+                                    <TableRow key={article.id}>
                                         <TableCell className="font-medium">{index + 1}</TableCell>
-                                        <TableCell className="font-medium">{category.title}</TableCell>
+                                        <TableCell className="font-medium">{article.title}</TableCell>
+                                        <TableCell className="font-medium">{article.category.title}</TableCell>
+                                        <TableCell className="font-medium">
+                                            <img src={article.image} alt={article.title} width="100px" />
+                                        </TableCell>
                                         <TableCell className='flex gap-1'>
                                             <Button size={"sm"}>
-                                                <Link href={route('category.edit', category.id)}>Edit</Link>
+                                                <Link href={route('article.edit', article.id)}>Edit</Link>
                                             </Button>
 
                                             <AlertDialog>
@@ -72,7 +80,7 @@ export default function Index({ auth }: PageProps) {
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => handleDelete(category.id)}>
+                                                        <AlertDialogAction onClick={() => handleDelete(article.id)}>
                                                             Continue
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>
@@ -82,7 +90,7 @@ export default function Index({ auth }: PageProps) {
                                         </TableCell>
                                     </TableRow>
                                 ))}
-                            </TableBody> */}
+                            </TableBody>
 
                         </Table>
                     </CardContent>

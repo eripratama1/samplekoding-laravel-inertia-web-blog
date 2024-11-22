@@ -16,7 +16,13 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Backend/Article/Index');
+        return Inertia::render('Backend/Article/Index',[
+            /**
+             * kode ini diguankan untuk eager load relasi category dan user agar
+             * query lebih efisien.
+             */
+            'articles' => Article::with(['category','user'])->get()
+        ]);
     }
 
     /**

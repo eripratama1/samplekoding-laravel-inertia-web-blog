@@ -19,6 +19,15 @@ export interface Role {
     guard_name: string;
     created_at: string;
 }
+export interface Article {
+    id:number;
+    title:string;
+    slug:string;
+    content:string;
+    image?:string;
+    category:Category
+    user?:User;
+}
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
