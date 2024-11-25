@@ -71,7 +71,7 @@ export default function Create({ auth, category }: CreateArticleProps) {
         const formData = new FormData();
         formData.append("title", data.title);
         formData.append("content", data.content);
-        formData.append("category)id", data.category_id);
+        formData.append("category_id", data.category_id);
 
         /**
          * Jika ada file gambar, tambahkan ke FormData

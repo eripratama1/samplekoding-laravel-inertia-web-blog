@@ -25,7 +25,8 @@ export interface Article {
     slug:string;
     content:string;
     image?:string;
-    category:Category
+    category:Category;
+    category_id:number;
     user?:User;
 }
 
