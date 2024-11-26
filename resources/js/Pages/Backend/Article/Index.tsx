@@ -17,14 +17,14 @@ export default function Index({ auth, articles }: ArticleIndexProps) {
 
     // Fungsi delete data category yang akan dijalankan saat AlertDialogAction di klik
     const handleDelete = (id: number) => {
-        // router.delete(route('category.destroy', id), {
-        //     onSuccess: () => {
-        //         toast.success('Category deleted');
-        //     },
-        //     onError: () => {
-        //         toast.error('Category deleted');
-        //     }
-        // })
+        router.delete(route('article.destroy', id), {
+            onSuccess: () => {
+                toast.success('Article deleted');
+            },
+            onError: () => {
+                toast.error('Fail to delete article');
+            }
+        })
     }
 
     return (

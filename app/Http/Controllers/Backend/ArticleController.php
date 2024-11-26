@@ -113,8 +113,12 @@ class ArticleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Article $article)
     {
-        //
+        if ($article->image) {
+            Storage::delete('public/images/' . basename($article->image));
+        }
+        $article->delete();
+        return to_route('article.index');
     }
 }
