@@ -190,7 +190,46 @@ export default function Edit({ auth, categories, article }: EditArticleProps) {
                                                     Bold, Essentials, Italic, Alignment, CodeBlock, Paragraph,
                                                     Image, ImageUpload, ImageToolbar, SimpleUploadAdapter,
                                                     ImageResize, ImageResizeButtons
-                                                ]
+                                                ],
+                                                image:{
+                                                    toolbar:[
+                                                        "imageTextAlternative",
+                                                        "imageStyle:full",
+                                                        "imageStyle:side",
+                                                        "imageStyle:alignLeft",
+                                                        "imageStyle:alignRight",
+                                                        "resizeImage",
+                                                    ],
+                                                    resizeOptions:[
+                                                        {
+                                                            name:"resizeImage:original",
+                                                            value:null,
+                                                            icon:'original',
+                                                            label:'Original'
+                                                        },
+                                                        {
+                                                            name:"resizeImage:25",
+                                                            value:"25",
+                                                            icon:'smal',
+                                                            label:'25%'
+                                                        },
+                                                        {
+                                                            name:"resizeImage:50",
+                                                            value:"50",
+                                                            icon:'medium',
+                                                            label:'50%'
+                                                        },
+                                                        {
+                                                            name:"resizeImage:75",
+                                                            value:"75",
+                                                            icon:'large',
+                                                            label:'75%'
+                                                        },
+                                                    ],
+                                                },
+                                                simpleUpload:{
+                                                    uploadUrl:"/upload/image"
+                                                }
                                             }}
                                         />
                                     </div>

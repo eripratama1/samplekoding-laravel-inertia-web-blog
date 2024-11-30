@@ -22,6 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
 
+
+        $middleware->validateCsrfTokens(except: [
+            '/upload/image'
+        ]);
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
+use function Laravel\Prompts\error;
+
 class ArticleController extends Controller
 {
     /**
@@ -98,14 +100,14 @@ class ArticleController extends Controller
             $image = $request->file('image');
             $imagePath = $image->storeAs('public/images', $image->hashName());
 
-             // Menambahkan path gambar baru ke array data untuk disimpan ke database.
+            // Menambahkan path gambar baru ke array data untuk disimpan ke database.
             $data['image'] = $imagePath;
         } else {
-             // Jika tidak ada file gambar baru, pastikan atribut 'image' dihapus dari data yang akan diupdate.
+            // Jika tidak ada file gambar baru, pastikan atribut 'image' dihapus dari data yang akan diupdate.
             unset($data['image']);
         }
 
-         // Memperbarui data artikel di database dengan data yang sudah disiapkan.
+        // Memperbarui data artikel di database dengan data yang sudah disiapkan.
         $article->update($data);
         return to_route('article.index');
     }
@@ -120,5 +122,32 @@ class ArticleController extends Controller
         }
         $article->delete();
         return to_route('article.index');
+    }
+
+    public function uploadImageContent(Request $request)
+    {
+        $request->validate([
+            'upload' => 'image|mimes:png,jpg,jpeg'
+        ]);
+
+        if ($request->hasFile('upload')) {
+            try {
+                $file = $request->file('upload');
+                $path = $file->store('images/imgContent', 'public');
+                $url  = Storage::url($path);
+
+                return response()->json([
+                    'uploaded' => true,
+                    'url' => $url
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'uploaded' => false,
+                    'error' => [
+                        'message' => 'failed to upload image' . $e->getMessage()
+                    ]
+                ], 500);
+            }
+        }
     }
 }

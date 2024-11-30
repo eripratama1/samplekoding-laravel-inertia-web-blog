@@ -40,6 +40,7 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     Route::resource('category', CategoryController::class);
     Route::resource('manage-role',RoleController::class);
     Route::resource('article',ArticleController::class);
+    Route::post('/upload/image',[ArticleController::class,'uploadImageContent']);
 
     Route::get('list-users',[RoleController::class,'listUsers'])->name('listUsers');
     Route::get('set-role/{id}',[RoleController::class,'setRole'])->name('setRole');
