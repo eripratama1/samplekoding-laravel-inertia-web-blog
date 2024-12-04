@@ -21,8 +21,8 @@ function DataTable<T>({ data, columns, paginationData, actionButton, actionInput
         <div className='w-full'>
             <div className='flex items-center py-4'>
                 {actionInputSearch}
-            </div>
             <div className='ml-auto my-2'>{actionButton}</div>
+            </div>
 
             <div className='rounded-md border'>
                 <Table>
@@ -75,7 +75,7 @@ function DataTable<T>({ data, columns, paginationData, actionButton, actionInput
                 </Table>
             </div>
 
-            <div className='flex items-center justify-end space-x-2 py-4'>
+            <div className='flex items-center justify-between space-x-2 py-4'>
                 {paginationData && (
                     <div className='flex text-sm text-muted-foreground'>
                         {paginationData.total > 0 ? (
@@ -86,7 +86,7 @@ function DataTable<T>({ data, columns, paginationData, actionButton, actionInput
                                 {Math.min(
                                     paginationData.per_page * paginationData.current_page,
                                     paginationData.total,
-                                )}{""}
+                                )}{" "}
                                 of {paginationData.total} entries
                             </React.Fragment>
                         ) : (

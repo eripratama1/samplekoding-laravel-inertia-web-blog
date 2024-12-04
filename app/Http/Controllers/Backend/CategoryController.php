@@ -13,10 +13,20 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        /**
+         * Menambahkan fungsi pencarian pada method index
+         * dan method paginate
+         */
+        $search = $request->input('search');
+        $categories = Category::query()
+        ->when($search,function($query,$search){
+            return $query->where('title','like',"%{$search}%");
+        })->latest()->paginate(3);
+
         return Inertia::render('Backend/Category/Index',[
-            'category' => Category::latest()->get()
+            'categories' => $categories
         ]);
     }
 
