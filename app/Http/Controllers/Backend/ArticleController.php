@@ -17,14 +17,22 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
+        $articles = Article::query()->with(['category','user'])
+        ->when($search, function($query,$search){
+            return $query->where('title','like',"%{$search}%")
+            ->orWhereHas('category',function($query) use ($search){
+                $query->where('title','like',"%{$search}%");
+            });
+        })->latest()->paginate(4);
         return Inertia::render('Backend/Article/Index', [
             /**
              * kode ini diguankan untuk eager load relasi category dan user agar
              * query lebih efisien.
              */
-            'articles' => Article::with(['category', 'user'])->get()
+            'articles' => $articles
         ]);
     }
 
