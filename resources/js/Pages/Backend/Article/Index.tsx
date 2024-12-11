@@ -64,7 +64,7 @@ export default function Index({ auth, articles }: ArticleIndexProps) {
             cell: ({ row }) => {
                 const imageFile = row.original.image
                 return (
-                    <img src={imageFile} alt={row.original.title} />
+                    <img src={imageFile} alt={row.original.title} width="60%" />
                 )
             }
         },
@@ -80,7 +80,7 @@ export default function Index({ auth, articles }: ArticleIndexProps) {
                             variant={"default"}
                             size={"sm"}
                             onClick={() => {
-                                router.visit(route("category.edit", article.id))
+                                router.visit(route("article.edit", article.id))
                             }}
                         >
                             Edit
@@ -116,7 +116,7 @@ export default function Index({ auth, articles }: ArticleIndexProps) {
         <Authenticated user={auth.user}>
             <Head title='List Article' />
             <div className='flex justify-center items-center my-10'>
-                <Card className='max-w-xl w-full h-full'>
+                <Card className='max-w-4xl w-full h-full'>
 
                     <CardContent>
                         <DataTable<Article>
