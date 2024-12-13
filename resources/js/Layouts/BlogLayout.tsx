@@ -21,10 +21,19 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
                     </Link>
 
                     <ResponsiveNavLink
-                        href='#'
+                        href={route('home')}
+                        active={route().current("home")}
                         className='flex items-center gap-3 rounded-lg px-3 py-2 my-1 text-muted-foreground transition-all hover:text-primary text-nowrap'
                     >
                         Article
+                    </ResponsiveNavLink>
+
+                    <ResponsiveNavLink
+                        href={route('categories')}
+                        active={route().current("categories")}
+                        className='flex items-center gap-3 rounded-lg px-3 py-2 my-1 text-muted-foreground transition-all hover:text-primary text-nowrap'
+                    >
+                        Categories
                     </ResponsiveNavLink>
                 </nav>
 

@@ -19,6 +19,7 @@ use Inertia\Inertia;
 // });
 
 Route::get('/',[BlogController::class,'home'])->name('home');
+Route::get('/categories',[BlogController::class,'categories'])->name('categories');
 
 Route::get('/dashboard', function () {
      // Mendapatkan data user yang sedang login menggunakan helper auth()
