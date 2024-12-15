@@ -44,7 +44,7 @@ export default function Categories({ categories }: CategoryProps) {
                         hover:text-white hover:scale-105 hover:-translate-y-2 hover:cursor-pointer transform
                         transition-all duration-300
                         flex items-center justify-center text-center h-40'>
-                                <Link href="#">
+                                <Link href={route('articlesByCategory',category.slug)}>
                                     <h2 className='text-4xl text-nowrap text-stone-700 font-extrabold'>
                                         {category.title}
                                     </h2>

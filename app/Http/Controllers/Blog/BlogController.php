@@ -25,4 +25,23 @@ class BlogController extends Controller
             'categories' => $categories
         ]);
     }
+
+    public function articlesByCategory($categoryName)
+    {
+        /**
+         * Mencari data kategori berdasarkan slug yang dikirim melalui parameter
+         */
+
+        $category = Category::where('slug', $categoryName)->first();
+
+        /**
+         * Mengambil artikel yang berhubungan dengan kategori tersebut
+         * Memuat relasi 'category' dan 'user' untuk mengurangi query tambahan (eager loading)
+         *          */
+        $articles = $category->articles()->with(['category','user'])->latest()->paginate(4);
+        return Inertia::render('Blog/ArticleByCategory',[
+            'articles' => $articles,
+            'category' => $category
+        ]);
+    }
 }
