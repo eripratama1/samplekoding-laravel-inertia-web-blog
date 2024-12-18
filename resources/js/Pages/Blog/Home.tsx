@@ -103,7 +103,7 @@ export default function Home({ articles }: HomeProps) {
                                             className='w-full h-auto object-cover rounded-md'
                                         />
                                         <div className='text-2xl font-bold my-4'>
-                                            <Link href='#'>{article.title}</Link>
+                                            <Link href={route('read',article.slug)}>{article.title}</Link>
                                         </div>
                                     </CardContent>
                                 </Card>

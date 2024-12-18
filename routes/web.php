@@ -23,6 +23,8 @@ Route::get('/categories',[BlogController::class,'categories'])->name('categories
 Route::get('/articles-category/{categoryName}',[BlogController::class,'articlesByCategory'])
 ->name('articlesByCategory');
 
+Route::get('/read-article/{slug}',[BlogController::class,'detailArticle'])->name('read');
+
 Route::get('/dashboard', function () {
      // Mendapatkan data user yang sedang login menggunakan helper auth()
     $user = auth()->user();

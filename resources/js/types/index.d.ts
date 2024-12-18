@@ -28,6 +28,7 @@ export interface Article {
     category: Category;
     category_id: number;
     user?: User;
+    created_at:string;
 }
 
 export interface PaginationData<T> {
