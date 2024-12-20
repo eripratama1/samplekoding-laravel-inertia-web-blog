@@ -24,6 +24,7 @@ Route::get('/articles-category/{categoryName}',[BlogController::class,'articlesB
 ->name('articlesByCategory');
 
 Route::get('/read-article/{slug}',[BlogController::class,'detailArticle'])->name('read');
+Route::get('/search-articles',[BlogController::class,'searchArticle']);
 
 Route::get('/dashboard', function () {
      // Mendapatkan data user yang sedang login menggunakan helper auth()

@@ -1,4 +1,5 @@
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink'
+import SearchBar from '@/components/searchbar'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Link } from '@inertiajs/react'
@@ -78,7 +79,7 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
 
                 <div className='flex  w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4'>
                     <div className='w-full flex justify-end'>
-                        search bar component
+                        <SearchBar/>
                     </div>
 
                     <div>

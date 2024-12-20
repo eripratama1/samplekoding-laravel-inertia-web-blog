@@ -62,4 +62,26 @@ class BlogController extends Controller
             'relatedArticles' => $relatedArticles
         ]);
     }
+
+    public function searchArticle(Request $request)
+    {
+         // Mengambil input query dari request
+        $query = $request->input('query');
+
+         /**
+          * Melakukan pencarian artikel jika query tidak kosong
+          * Menggunakan metode when() untuk memeriksa apakah query tidak kosong
+          * Jika tidak kosong maka akan mencari artikel berdasarkan judul dan kategori
+          * Menggunakan whereHas() untuk mencari artikel berdasarkan judul kategori
+          */
+
+        $articles = Article::when($query, function ($queryBuilder) use ($query) {
+            return $queryBuilder->where('title', 'like', "%{$query}%")
+                ->orWhereHas('category', function ($categoryQuery) use ($query) {
+                    $categoryQuery->where('title', 'like', "%{$query}%");
+                });
+        })->get();
+
+        return response()->json($articles);
+    }
 }
