@@ -3,11 +3,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { DollarSign } from 'lucide-react';
 import { PageProps } from '@/types';
+import { Button } from '@/components/ui/button';
 
 // Menerima props 'auth' yang bertipe 'PageProps'
 // Tipe PageProps mendefinisikan struktur data yang diterima oleh auth,
 // yang berisi informasi tentang pengguna yang login.
 export default function Dashboard({ auth }: PageProps) {
+
+    const checkRole = auth.user.roles.length == 0;
+    console.log("Result checkRole", checkRole);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -19,15 +24,7 @@ export default function Dashboard({ auth }: PageProps) {
         >
             <Head title="Dashboard" />
 
-            {/* <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            You're logged in!
-                        </div>
-                    </div>
-                </div>
-            </div> */}
+            {checkRole && <Button>Become an article writer</Button>}
 
             <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
                 <Card x-chunk="dashboard-01-chunk-0">

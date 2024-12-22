@@ -1,14 +1,14 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import BlogLayout from '@/Layouts/BlogLayout'
-import { Category } from '@/types'
+import { Category, PageProps } from '@/types'
 import { Head, Link } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react'
 
-interface CategoryProps {
+interface CategoryProps extends PageProps {
     categories: Category[]
 }
 
-export default function Categories({ categories }: CategoryProps) {
+export default function Categories({ categories, auth }: CategoryProps) {
 
     console.log("cek props", categories);
 
@@ -20,7 +20,7 @@ export default function Categories({ categories }: CategoryProps) {
     }, [])
 
     return (
-        <BlogLayout>
+        <BlogLayout auth={auth}>
             <Head title='Categories' />
             <div className='container mx-auto p-4'>
                 {loading ? (
@@ -44,7 +44,7 @@ export default function Categories({ categories }: CategoryProps) {
                         hover:text-white hover:scale-105 hover:-translate-y-2 hover:cursor-pointer transform
                         transition-all duration-300
                         flex items-center justify-center text-center h-40'>
-                                <Link href={route('articlesByCategory',category.slug)}>
+                                <Link href={route('articlesByCategory', category.slug)}>
                                     <h2 className='text-4xl text-nowrap text-stone-700 font-extrabold'>
                                         {category.title}
                                     </h2>

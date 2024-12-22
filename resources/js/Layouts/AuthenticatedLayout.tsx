@@ -30,6 +30,7 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
 
     // Mendeklarasikan variabel 'isAdmin' yang akan menyimpan nilai true atau false
     const isAdmin = user.roles?.some(role => role.name === 'Admin');
+    const isAuthor = user.roles?.some(role => role.name === 'Author');
 
     // Mengakses properti 'roles' dari objek 'user'
     // Operator ?. (optional chaining) digunakan untuk mencegah error jika 'roles' bernilai undefined atau null
@@ -41,7 +42,10 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
 
     // Jika ada peran dengan 'name' 'Admin', maka .some() akan mengembalikan true, sehingga 'isAdmin' akan bernilai true
     // Jika tidak ada atau 'roles' kosong, maka 'isAdmin' akan bernilai false
-    console.log("User Data", isAdmin, user);
+    // console.log("User Data", isAdmin, user);
+
+    console.log("Result isAuthor", isAuthor);
+
 
     return (
 
@@ -49,7 +53,7 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
             <header className='sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6'>
                 <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
                     <Link
-                        href="#"
+                        href="/"
                         className="flex items-center gap-2 text-lg font-semibold md:text-base"
                     >
                         <Package2 className="h-6 w-6" />
@@ -89,17 +93,20 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                                 Manage Users
                             </ResponsiveNavLink>
 
-                            <ResponsiveNavLink
-                                href={route('article.index')}
-                                className="text-foreground transition-colors hover:text-foreground"
-                                active={route().current('article*')}
-                            >
-                                Articles
-                            </ResponsiveNavLink>
+
 
                         </>
                     )}
 
+                    {(isAdmin || isAuthor) && (
+                        <ResponsiveNavLink
+                            href={route('article.index')}
+                            className="text-foreground transition-colors hover:text-foreground"
+                            active={route().current('article*')}
+                        >
+                            Articles
+                        </ResponsiveNavLink>
+                    )}
                 </nav>
 
                 {/* Mobile menu */}

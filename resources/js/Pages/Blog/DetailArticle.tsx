@@ -1,17 +1,17 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import BlogLayout from '@/Layouts/BlogLayout'
-import { Article } from '@/types'
+import { Article, PageProps } from '@/types'
 import { Head, Link } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
 import parse from 'html-react-parser';
 
-interface DetailArticleProps {
+interface DetailArticleProps extends PageProps {
     article: Article;
     relatedArticles: Article[]
 }
 
-export default function DetailArticle({ article, relatedArticles }: DetailArticleProps) {
+export default function DetailArticle({ article, relatedArticles,auth }: DetailArticleProps) {
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -21,7 +21,7 @@ export default function DetailArticle({ article, relatedArticles }: DetailArticl
     }, [])
 
     return (
-        <BlogLayout>
+        <BlogLayout auth={auth}>
             <Head title={article.title} />
             <div className='container mx-auto flex flex-col lg:flex-row gap-4 px-4 lg:px-6'>
                 <div className='w-full lg:w-9/12'>

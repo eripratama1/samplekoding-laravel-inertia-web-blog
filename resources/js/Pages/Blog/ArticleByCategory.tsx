@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import BlogLayout from "@/Layouts/BlogLayout";
-import { Article, Category } from "@/types";
+import { Article, Category, PageProps } from "@/types";
 import { Head, Link, router } from "@inertiajs/react";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-interface ArticleByCategoryProps {
+interface ArticleByCategoryProps extends PageProps {
     articles: {
         // Array dari artikel yang diterima sebagai props
         data: Article[],
@@ -17,7 +17,7 @@ interface ArticleByCategoryProps {
     category: Category
 }
 
-export default function ArticleByCategory({ articles, category }: ArticleByCategoryProps) {
+export default function ArticleByCategory({ articles, category, auth }: ArticleByCategoryProps) {
 
     const [dataArticles, setDataArticles] = useState<Article[]>(articles.data)
     const [currentPage, setCurrentPage] = useState(articles.current_page)
@@ -63,7 +63,7 @@ export default function ArticleByCategory({ articles, category }: ArticleByCateg
         })
     }
     return (
-        <BlogLayout>
+        <BlogLayout auth={auth}>
             <Head title={`Article ` + category.title} />
             <div className='container mx-auto flex flex-col lg:flex-row gap-4'>
                 <div className='w-full'>
@@ -104,7 +104,7 @@ export default function ArticleByCategory({ articles, category }: ArticleByCateg
                                             className='w-full h-auto object-cover rounded-md'
                                         />
                                         <div className='text-2xl font-bold my-4'>
-                                            <Link href={route('read',article.slug)}>{article.title}</Link>
+                                            <Link href={route('read', article.slug)}>{article.title}</Link>
                                         </div>
                                     </CardContent>
                                 </Card>

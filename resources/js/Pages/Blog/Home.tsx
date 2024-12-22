@@ -2,13 +2,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import BlogLayout from '@/Layouts/BlogLayout'
-import { Article } from '@/types'
+import { Article, PageProps } from '@/types'
 import { Head, Link, router } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 
 // Definisi interface untuk properti komponen Home
-interface HomeProps {
+interface HomeProps extends PageProps {
     articles: {
         // Array dari artikel yang diterima sebagai props
         data: Article[],
@@ -17,7 +17,7 @@ interface HomeProps {
     }
 }
 
-export default function Home({ articles }: HomeProps) {
+export default function Home({ articles, auth }: HomeProps) {
     // console.log("result props", articles.last_page);
 
     /** Inisialisasi state untuk menyimpan data artikel */
@@ -66,7 +66,7 @@ export default function Home({ articles }: HomeProps) {
     }
 
     return (
-        <BlogLayout>
+        <BlogLayout auth={auth}>
             <Head title='Home' />
             <div className='container mx-auto flex flex-col lg:flex-row gap-4'>
                 <div className='w-full'>
@@ -103,7 +103,7 @@ export default function Home({ articles }: HomeProps) {
                                             className='w-full h-auto object-cover rounded-md'
                                         />
                                         <div className='text-2xl font-bold my-4'>
-                                            <Link href={route('read',article.slug)}>{article.title}</Link>
+                                            <Link href={route('read', article.slug)}>{article.title}</Link>
                                         </div>
                                     </CardContent>
                                 </Card>
