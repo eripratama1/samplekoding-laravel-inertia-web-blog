@@ -1,17 +1,72 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import BlogLayout from '@/Layouts/BlogLayout'
-import { Article, PageProps } from '@/types'
-import { Head, Link } from '@inertiajs/react'
+import { Article, Comment, PageProps } from '@/types'
+import { Head, Link, useForm } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
 import parse from 'html-react-parser';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 interface DetailArticleProps extends PageProps {
     article: Article;
     relatedArticles: Article[]
+    comments?: Comment[]
 }
 
-export default function DetailArticle({ article, relatedArticles,auth }: DetailArticleProps) {
+interface CommentFormProps {
+    articleId: number;
+    articleSlug: string;
+    authorId: number | undefined;
+    authorName: string | undefined;
+}
+
+/**
+ * Kode ini digunakan untuk membuat form komentar
+ *
+ * */
+function CommentForm({ articleId, articleSlug, authorId, authorName }: CommentFormProps) {
+    const { data, setData, post, reset } = useForm({
+        content: "",
+        article_id: articleId,
+        authorId: authorId
+    })
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setData("content", e.target.value)
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+        post('/comments', {
+            onSuccess: () => {
+                toast.success("comment submitted")
+                reset("content")
+            },
+            onError: (error) => {
+                toast.error("failed submit comment", error)
+            }
+
+        })
+    }
+
+    return (
+        <form onSubmit={handleSubmit} className='mb-4'>
+            <textarea
+                className='w-full p-3 border rounded-md focus:ring focus:ring-indigo-300'
+                placeholder='Write your comment...'
+                value={data.content}
+                onChange={handleChange}
+            >
+            </textarea>
+            <Button className='mt-2 px-4 py-3 bg-indigo-500 text-white rounded-md hover:bg-indigo-600'>
+                Submit comment
+            </Button>
+        </form>
+    )
+}
+
+export default function DetailArticle({ article, relatedArticles, auth }: DetailArticleProps) {
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -97,9 +152,27 @@ export default function DetailArticle({ article, relatedArticles,auth }: DetailA
                         </Card>
 
                         <div className='mt-6'>
-                            <div className='text-center'>
-                                form komentar
-                            </div>
+                            <Card>
+                                <CardContent>
+                                    <h2 className='text-2xl font-semibold mb-4 mt-4'>
+                                        Leave a comment
+                                    </h2>
+
+                                    {/*
+                                        Komponen berikut akan menampilkan form komentar
+                                        dimana kita akan mengirimkan data berupa articleId,
+                                        articleSlug,authorId, dan authorName lalu akan mengirimkan
+                                        data tersebut ke endpoint /comments dengan method POST
+                                        seperti yang sudah kita definisikan pada fungsi CommentForm
+                                    */}
+                                    <CommentForm
+                                        articleId={article.id}
+                                        articleSlug={article.slug}
+                                        authorName={article.user?.name}
+                                        authorId={article.user?.id}
+                                    />
+                                </CardContent>
+                            </Card>
                         </div>
                     </div>
                 </div>

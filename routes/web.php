@@ -4,6 +4,7 @@ use App\Http\Controllers\Backend\ArticleController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Blog\BlogController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +26,7 @@ Route::get('/articles-category/{categoryName}', [BlogController::class, 'article
 
 Route::get('/read-article/{slug}', [BlogController::class, 'detailArticle'])->name('read');
 Route::get('/search-articles', [BlogController::class, 'searchArticle']);
-
+Route::post('/comments', [CommentController::class, 'store']);
 
 
 Route::middleware('auth')->group(function () {

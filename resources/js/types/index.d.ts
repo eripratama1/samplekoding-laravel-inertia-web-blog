@@ -42,6 +42,17 @@ export interface PaginationData<T> {
     next_page_url: string | null;
 }
 
+export interface Comment {
+    id:number;
+    content:string;
+    created_at:string;
+    article_id:number;
+    user_id:number;
+    parent_id:number | null;
+    user?:User;
+    replies?:Comment[]
+}
+
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
         user: User;
