@@ -7,6 +7,8 @@ import React, { useEffect, useState } from 'react'
 import parse from 'html-react-parser';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { formatDistanceToNow } from "date-fns"
+import { id } from "date-fns/locale"
 
 interface DetailArticleProps extends PageProps {
     article: Article;
@@ -14,11 +16,90 @@ interface DetailArticleProps extends PageProps {
     comments?: Comment[]
 }
 
+/**
+ * Interface CommentFormProps digunakan untuk membuat props pada fungsi CommentForm
+ * yang akan digunakan untuk membuat form komentar pada artikel
+ * isi dari interface ini adalah articleId, articleSlug, authorId, dan authorName
+ * dimana articleId bertipe number yang akan digunakan untuk menyimpan id artikel
+ * articleSlug bertipe string yang akan digunakan untuk menyimpan slug artikel
+ * authorId bertipe number | undefined yang akan digunakan untuk menyimpan id penulis artikel
+ * authorName bertipe string | undefined yang akan digunakan untuk menyimpan nama penulis artikel
+ */
 interface CommentFormProps {
     articleId: number;
     articleSlug: string;
     authorId: number | undefined;
     authorName: string | undefined;
+}
+
+/**
+ * Interface ini digunakan untuk membuat props pada fungsi RenderComment
+ * yang akan digunakan untuk menampilkan komentar pada artikel
+ * isi dari interface ini adalah commentsMap, parentId, level, handleReply, replyTo, dan articleId
+ * dimana commentsMap adalah Map<number, Comment[]> yang akan digunakan untuk menyimpan data komentar
+ * parentId adalah number yang akan digunakan untuk menyimpan id komentar
+ * level adalah number yang akan digunakan untuk menyimpan level komentar
+ * handleReply adalah fungsi yang akan digunakan untuk menangani balasan komentar
+ * replyTo akan digunakan untuk menyimpan nilai id balasan komentar
+ * articleId akan digunakan untuk menyimpan id artikel yang akan dikomentari
+ */
+interface RenderCommentProps {
+    commentsMap: Map<number, Comment[]>
+    parentId: number;
+    level?: number;
+    handleReply: (parentId: number | null) => void;
+    replyTo?: number | null;
+    articleId: number;
+}
+
+/**
+ *
+ * Interface dibwah ini digunakan untuk membuat props pada fungsi buildCommentTree
+ * yang akan digunakan untuk membuat tree komentar pada artikel yang akan ditampilkan pada halaman detail artikel
+ * isi dari interface ini adalah comments yang akan digunakan untuk menyimpan data komentar
+ * yang akan ditampilkan pada halaman detail artikel tersebut
+ *
+ */
+function buildCommentTree(comments: Comment[]) {
+    const commentMap = new Map<number, Comment[]>()
+    comments.forEach((comment) => {
+        const parentId = comment.parent_id || 0;
+        if (!commentMap.has(parentId)) {
+            commentMap.set(parentId, [])
+        }
+        commentMap.get(parentId)?.push(comment)
+    })
+
+    return commentMap
+}
+
+function RenderComment({ commentsMap, parentId, level, handleReply, replyTo, articleId }: RenderCommentProps) {
+    const comments = commentsMap.get(parentId) || []
+
+    return comments.map((comment) => (
+        <div key={comment.id} className='mb-4 w-full max-w-7xl'>
+            <div className='p-4 border-l-4 border-indigo-500 rounded-md bg-white shadow-sm transition-all hover:shadow-lg
+            hover:bg-indigo-200 duration-300'>
+                <div className='flex items-center justify-between'>
+                    <div className='text-indigo-600 font-semibold text-sm'>
+                        {comment.user?.name}
+                    </div>
+                    <div className='text-xs text-gray-400'>
+                        {formatDistanceToNow(new Date(comment.created_at), {
+                            addSuffix: true,
+                            locale: id
+                        })}
+                    </div>
+                </div>
+                <p className='mt-2 text-gray-700'>{comment.content}</p>
+                <button className='text-indigo-500 text-sm mt-2 hover:underline'
+                    onClick={() => handleReply(comment.id)}
+                >
+                    Reply
+                </button>
+            </div>
+        </div>
+    ))
 }
 
 /**
@@ -66,7 +147,7 @@ function CommentForm({ articleId, articleSlug, authorId, authorName }: CommentFo
     )
 }
 
-export default function DetailArticle({ article, relatedArticles, auth }: DetailArticleProps) {
+export default function DetailArticle({ article, relatedArticles, auth, comments = [] }: DetailArticleProps) {
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -74,6 +155,12 @@ export default function DetailArticle({ article, relatedArticles, auth }: Detail
         const timer = setTimeout(() => setIsLoading(false), 1000)
         return () => clearTimeout(timer)
     }, [])
+
+    const [replyTo, setReplyTo] = useState<number | null>(null)
+    const handleReply = (parentId: number | null) => {
+        setReplyTo(parentId)
+    }
+    const commentsMap = buildCommentTree(comments)
 
     return (
         <BlogLayout auth={auth}>
@@ -171,6 +258,19 @@ export default function DetailArticle({ article, relatedArticles, auth }: Detail
                                         authorName={article.user?.name}
                                         authorId={article.user?.id}
                                     />
+
+                                    {comments.length > 0 ? (
+                                        <RenderComment
+                                            commentsMap={commentsMap}
+                                            parentId={0}
+                                            level={0}
+                                            handleReply={handleReply}
+                                            replyTo={replyTo}
+                                            articleId={article.id}
+                                        />
+                                    ) : (
+                                        <p className='text-gray-500'>No Comments yet.</p>
+                                    )}
                                 </CardContent>
                             </Card>
                         </div>

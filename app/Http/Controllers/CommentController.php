@@ -8,12 +8,17 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
+    /**
+     * Method ini digunakan untuk menyimpan data komentar baru.
+     */
     public function store(Request $request)
     {
+        // Jika user belum login, maka redirect ke halaman login
         if (!Auth::user()) {
             return to_route('login');
         }
 
+        // Validasi data yang dikirim
         $validated = $request->validate([
             'content' => 'required|max:1000|string',
             'article_id' => 'exists:articles,id',
@@ -21,6 +26,7 @@ class CommentController extends Controller
             'authorName' => 'string'
         ]);
 
+        // Simpan data ke dalam database
         $comment = new Comment();
         $comment->content = $validated['content'];
         $comment->article_id = $validated['article_id'];

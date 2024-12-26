@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Blog;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -56,10 +57,19 @@ class BlogController extends Controller
             ->where('id', '!=', $article->id)
             ->get();
 
+        /** Kode berikut digunakan untuk mendapatkan komentar yang terkait dengan
+         *  artikel yang sedang ditampilkan.
+         *  Kode ini akan mengambil semua komentar yang memiliki article_id yang sama dengan
+         *  id artikel yang sedang ditampilkan.
+        */
+        $comments = Comment::where('article_id',$article->id)->with(['article','user'])
+        ->latest()
+        ->get();
         // mengirimkan data artikel dan artikel terkait ke komponen "Blog/DetailArticle".
         return Inertia::render('Blog/DetailArticle', [
             'article' => $article,
-            'relatedArticles' => $relatedArticles
+            'relatedArticles' => $relatedArticles,
+            'comments' => $comments
         ]);
     }
 
