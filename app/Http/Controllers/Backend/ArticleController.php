@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -19,19 +20,31 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
+        // Mengambil data pencarian dari query string 'search'.
         $search = $request->input('search');
-        $articles = Article::query()->with(['category','user'])
-        ->when($search, function($query,$search){
-            return $query->where('title','like',"%{$search}%")
-            ->orWhereHas('category',function($query) use ($search){
-                $query->where('title','like',"%{$search}%");
-            });
-        })->latest()->paginate(4);
+        // Mengambil data user yang sedang login.
+        $user = $request->user();
+
+        // Mengambil data artikel dari database dengan relasi 'category'.
+        $articles = Article::with('category')
+            // Jika ada data pencarian, lakukan pencarian berdasarkan judul artikel atau kategori artikel.
+            ->when($search, function ($query, $search) {
+                return $query->where('title', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($query) use ($search) {
+                        $query->where('title', 'like', "%{$search}%");
+                    });
+            })
+            // Jika user memiliki role 'Author', hanya tampilkan artikel yang dibuat oleh user tersebut.
+            ->when($user->hasRole('Author'), function ($query) use ($user) {
+                return $query->where('user_id', $user->id);
+            })
+            // Jika user memiliki role 'Admin', tampilkan semua artikel.
+            ->when($user->hasRole('Admin'), function ($query) {
+                return $query;
+            })
+            ->latest()
+            ->paginate(4);
         return Inertia::render('Backend/Article/Index', [
-            /**
-             * kode ini diguankan untuk eager load relasi category dan user agar
-             * query lebih efisien.
-             */
             'articles' => $articles
         ]);
     }
@@ -68,11 +81,24 @@ class ArticleController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Di method show ini akan menampilkan halaman detail artikel.
+     * Data artikel yang akan ditampilkan diambil berdasarkan slug yang diterima.
+
+     * Pada halaman detail artikel, juga menampilkan daftar komentar yang terkait dengan artikel tersebut.
+     * Komentar diurutkan berdasarkan waktu pembuatan terbaru.
+     *
      */
-    public function show(string $id)
+    public function show($slug)
     {
-        //
+        $article = Article::where('slug', $slug)->with(['category', 'user'])->firstOrFail();
+        $comments = Comment::where('article_id', $article->id)
+            ->with(['article', 'user'])
+            ->latest()
+            ->get();
+        return Inertia::render('Backend/Article/Show', [
+            'article' => $article,
+            'comments' => $comments
+        ]);
     }
 
     /**

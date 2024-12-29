@@ -23,7 +23,8 @@ class CommentController extends Controller
             'content' => 'required|max:1000|string',
             'article_id' => 'exists:articles,id',
             'authorId' => 'exists:users,id',
-            'authorName' => 'string'
+            'authorName' => 'string',
+            'parent_id' => 'nullable|exists:comments,id'
         ]);
 
         // Simpan data ke dalam database

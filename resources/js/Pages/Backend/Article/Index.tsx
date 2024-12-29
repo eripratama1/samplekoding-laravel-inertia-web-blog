@@ -76,6 +76,16 @@ export default function Index({ auth, articles }: ArticleIndexProps) {
 
                 return (
                     <div className='flex space-x-2'>
+                         <Button
+                            variant={"outline"}
+                            size={"sm"}
+                            onClick={() => {
+                                router.visit(route("article.show", article.slug))
+                            }}
+                        >
+                            Show article
+                        </Button>
+
                         <Button
                             variant={"default"}
                             size={"sm"}

@@ -1,48 +1,19 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import BlogLayout from '@/Layouts/BlogLayout'
+import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Article, Comment, PageProps } from '@/types'
-import { Head, Link, useForm } from '@inertiajs/react'
+import { Head, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react'
-import parse from 'html-react-parser';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from "date-fns"
 import { id } from "date-fns/locale"
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import parse from 'html-react-parser';
+import { Button } from '@/components/ui/button';
 
-interface DetailArticleProps extends PageProps {
+interface ShowArticleProps extends PageProps {
     article: Article;
-    relatedArticles: Article[]
-    comments?: Comment[]
+    comments: Comment[]
 }
 
-/**
- * Interface CommentFormProps digunakan untuk membuat props pada fungsi CommentForm
- * yang akan digunakan untuk membuat form komentar pada artikel
- * isi dari interface ini adalah articleId, articleSlug, authorId, dan authorName
- * dimana articleId bertipe number yang akan digunakan untuk menyimpan id artikel
- * articleSlug bertipe string yang akan digunakan untuk menyimpan slug artikel
- * authorId bertipe number | undefined yang akan digunakan untuk menyimpan id penulis artikel
- * authorName bertipe string | undefined yang akan digunakan untuk menyimpan nama penulis artikel
- */
-interface CommentFormProps {
-    articleId: number;
-    articleSlug: string;
-    authorId: number | undefined;
-    authorName: string | undefined;
-}
-
-/**
- * Interface ini digunakan untuk membuat props pada fungsi RenderComment
- * yang akan digunakan untuk menampilkan komentar pada artikel
- * isi dari interface ini adalah commentsMap, parentId, level, handleReply, replyTo, dan articleId
- * dimana commentsMap adalah Map<number, Comment[]> yang akan digunakan untuk menyimpan data komentar
- * parentId adalah number yang akan digunakan untuk menyimpan id komentar
- * level adalah number yang akan digunakan untuk menyimpan level komentar
- * handleReply adalah fungsi yang akan digunakan untuk menangani balasan komentar
- * replyTo akan digunakan untuk menyimpan nilai id balasan komentar
- * articleId akan digunakan untuk menyimpan id artikel yang akan dikomentari
- */
 interface RenderCommentProps {
     commentsMap: Map<number, Comment[]>
     parentId: number;
@@ -58,14 +29,6 @@ interface ReplyFormProps {
     handleCancel: () => void;
 }
 
-/**
- *
- * Interface dibwah ini digunakan untuk membuat props pada fungsi buildCommentTree
- * yang akan digunakan untuk membuat tree komentar pada artikel yang akan ditampilkan pada halaman detail artikel
- * isi dari interface ini adalah comments yang akan digunakan untuk menyimpan data komentar
- * yang akan ditampilkan pada halaman detail artikel tersebut
- *
- */
 function buildCommentTree(comments: Comment[]) {
     const commentMap = new Map<number, Comment[]>()
     comments.forEach((comment) => {
@@ -86,7 +49,7 @@ function RenderComment({ commentsMap, parentId, level, handleReply, replyTo, art
         <>
             <div key={comment.id} className='mb-4 w-full max-w-7xl'>
                 <div className='p-4 border-l-4 border-indigo-500 rounded-md bg-white shadow-sm transition-all hover:shadow-lg
-        hover:bg-indigo-200 duration-300'>
+            hover:bg-indigo-200 duration-300'>
                     <div className='flex items-center justify-between'>
                         <div className='text-indigo-600 font-semibold text-sm'>
                             {comment.user?.name}
@@ -106,6 +69,12 @@ function RenderComment({ commentsMap, parentId, level, handleReply, replyTo, art
                     </button>
                 </div>
 
+                {/*
+                    Kode dibawah ini untuk menampilkan form reply comment
+                    ketika user menekan tombol reply pada comment tertentu
+                    dengan menggunakan kondisi jika replyTo sama dengan id comment
+                    maka form reply comment akan ditampilkan
+                */}
                 {replyTo === comment.id && (
                     <ReplyForm
                         parentId={comment.id}
@@ -115,6 +84,10 @@ function RenderComment({ commentsMap, parentId, level, handleReply, replyTo, art
                 )}
             </div>
             <div className='ml-4 mt-4'>
+                {/* Komponen dibawah ini akan menampilkan reply comment
+                    dengan menggunakan fungsi rekursif.Level akan bertambah 1
+                    setiap kali fungsi dipanggil
+                */}
                 <RenderComment
                     commentsMap={commentsMap}
                     parentId={comment.id}
@@ -128,6 +101,10 @@ function RenderComment({ commentsMap, parentId, level, handleReply, replyTo, art
     ))
 }
 
+// Fungsi ReplyForm untuk menampilkan form reply comment yang berisi textarea dan button submit dan cancel
+// dengan menggunakan props articleId, parentId, dan handleCancel yang berisi fungsi untuk menutup form reply comment
+// Fungsi handleSubmit akan mengirimkan data comment ke endpoint /comments dengan method POST
+// Fungsi handleChange akan mengubah data content pada form textarea
 function ReplyForm({ articleId, parentId, handleCancel }: ReplyFormProps) {
     const { data, setData, post, reset } = useForm({
         content: "",
@@ -161,7 +138,7 @@ function ReplyForm({ articleId, parentId, handleCancel }: ReplyFormProps) {
                     Submit Reply
                 </Button>
                 <Button className='mt-2 px-4 py-3 bg-slate-500 text-white rounded-md hover:bg-slate-600'
-                onClick={handleCancel}>
+                    onClick={handleCancel}>
                     Cancel
                 </Button>
             </div>
@@ -169,52 +146,7 @@ function ReplyForm({ articleId, parentId, handleCancel }: ReplyFormProps) {
     )
 }
 
-/**
- * Kode ini digunakan untuk membuat form komentar
- *
- * */
-function CommentForm({ articleId, articleSlug, authorId, authorName }: CommentFormProps) {
-    const { data, setData, post, reset } = useForm({
-        content: "",
-        article_id: articleId,
-        authorId: authorId
-    })
-
-    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setData("content", e.target.value)
-    }
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        post('/comments', {
-            onSuccess: () => {
-                toast.success("comment submitted")
-                reset("content")
-            },
-            onError: (error) => {
-                toast.error("failed submit comment", error)
-            }
-
-        })
-    }
-
-    return (
-        <form onSubmit={handleSubmit} className='mb-4'>
-            <textarea
-                className='w-full p-3 border rounded-md focus:ring focus:ring-indigo-300'
-                placeholder='Write your comment...'
-                value={data.content}
-                onChange={handleChange}
-            >
-            </textarea>
-            <Button className='mt-2 px-4 py-3 bg-indigo-500 text-white rounded-md hover:bg-indigo-600'>
-                Submit comment
-            </Button>
-        </form>
-    )
-}
-
-export default function DetailArticle({ article, relatedArticles, auth, comments = [] }: DetailArticleProps) {
+export default function Show({ auth, article, comments = [] }: ShowArticleProps) {
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -230,10 +162,11 @@ export default function DetailArticle({ article, relatedArticles, auth, comments
     const commentsMap = buildCommentTree(comments)
 
     return (
-        <BlogLayout auth={auth}>
+        <Authenticated user={auth.user}>
             <Head title={article.title} />
+
             <div className='container mx-auto flex flex-col lg:flex-row gap-4 px-4 lg:px-6'>
-                <div className='w-full lg:w-9/12'>
+                <div className='w-full'>
                     <div className='grid gap-4'>
                         <Card className='h-full max-h-[1000vh] overflow-auto'>
                             <CardHeader>
@@ -309,22 +242,9 @@ export default function DetailArticle({ article, relatedArticles, auth, comments
                             <Card>
                                 <CardContent>
                                     <h2 className='text-2xl font-semibold mb-4 mt-4'>
-                                        Leave a comment
+                                        Reply a comment
                                     </h2>
 
-                                    {/*
-                                        Komponen berikut akan menampilkan form komentar
-                                        dimana kita akan mengirimkan data berupa articleId,
-                                        articleSlug,authorId, dan authorName lalu akan mengirimkan
-                                        data tersebut ke endpoint /comments dengan method POST
-                                        seperti yang sudah kita definisikan pada fungsi CommentForm
-                                    */}
-                                    <CommentForm
-                                        articleId={article.id}
-                                        articleSlug={article.slug}
-                                        authorName={article.user?.name}
-                                        authorId={article.user?.id}
-                                    />
 
                                     {comments.length > 0 ? (
                                         <RenderComment
@@ -344,42 +264,8 @@ export default function DetailArticle({ article, relatedArticles, auth, comments
                     </div>
                 </div>
 
-                <div className='w-full lg:w-3/12'>
-                    <Card>
-                        <CardContent>
-                            {isLoading ? (
-                                <>
-                                    <Skeleton className='h-8 w-40 mb-4 mt-6' />
-                                    <Skeleton className='h-6 w-full mb-2 ' />
-                                    <Skeleton className='h-6 w-3/4 mb-2' />
-                                    <Skeleton className='h-6 w-2/4' />
-                                </>
-                            ) : relatedArticles.length > 0 ? (
-                                <>
-                                    <p className='font-semibold mb-2 mt-6 text-3xl'>
-                                        Artikel Lainnya
-                                    </p>
-                                    <ul>
-                                        {relatedArticles.map((relatedArticle) => (
-                                            <li className='mb-2' key={relatedArticle.id}>
-                                                <Link
-                                                    href={route('read', relatedArticle.slug)}
-                                                >
-                                                    {relatedArticle.title}
-                                                </Link>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </>
-                            ) : (
-                                <p className='text-gray-500 mt-6'>
-                                    Tidak ada artikel terkait
-                                </p>
-                            )}
-                        </CardContent>
-                    </Card>
-                </div>
+
             </div>
-        </BlogLayout>
+        </Authenticated>
     )
 }
