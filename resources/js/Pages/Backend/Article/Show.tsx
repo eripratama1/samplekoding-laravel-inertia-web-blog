@@ -127,7 +127,7 @@ function ReplyForm({ articleId, parentId, handleCancel }: ReplyFormProps) {
     return (
         <form onSubmit={handleSubmit} className='mb-4'>
             <textarea
-                className='w-full p-3 border rounded-md focus:ring focus:ring-indigo-300'
+                className='w-full p-3 border rounded-md focus:ring focus:ring-indigo-300 dark:text-black'
                 placeholder='Write your comment...'
                 value={data.content}
                 onChange={handleChange}

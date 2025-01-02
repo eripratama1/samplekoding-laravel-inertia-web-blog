@@ -11,6 +11,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { CircleUser, Menu, Package2, Search } from 'lucide-react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import { User } from '@/types';
+import { ModeToggle } from '@/components/mode-toggle';
 
 
 // Interface ini bertujuan untuk menentukan tipe props yang akan diterima oleh komponen autentikasi
@@ -62,7 +63,7 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                     <ResponsiveNavLink
                         href={route('dashboard')}
                         className="text-foreground transition-colors hover:text-foreground"
-                        active={route().current('dashboard')}
+                        active={route().current('dashboard') || route().current('dashboard-admin')}
                     >
                         Dashboard
                     </ResponsiveNavLink>
@@ -77,23 +78,39 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                                 Categories
                             </ResponsiveNavLink>
 
-                            <ResponsiveNavLink
-                                href={route('manage-role.index')}
-                                className="text-foreground transition-colors hover:text-foreground text-nowrap"
-                                active={route().current('manage-role*')}
-                            >
-                                Manage Role
-                            </ResponsiveNavLink>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant={"ghost"} size={"sm"}>
+                                        Manage
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuLabel>
+                                        Menu Role & User
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
 
-                            <ResponsiveNavLink
-                                href={route('listUsers')}
-                                className="text-foreground transition-colors hover:text-foreground text-nowrap"
-                                active={route().current('listUsers*')}
-                            >
-                                Manage Users
-                            </ResponsiveNavLink>
+                                    <DropdownMenuItem asChild>
+                                        <ResponsiveNavLink
+                                            href={route('manage-role.index')}
+                                            className="text-foreground transition-colors hover:text-foreground text-nowrap"
+                                            active={route().current('manage-role*')}
+                                        >
+                                            Manage Role
+                                        </ResponsiveNavLink>
+                                    </DropdownMenuItem>
 
-
+                                    <DropdownMenuItem asChild>
+                                        <ResponsiveNavLink
+                                            href={route('listUsers')}
+                                            className="text-foreground transition-colors hover:text-foreground text-nowrap"
+                                            active={route().current('listUsers*')}
+                                        >
+                                            Manage Users
+                                        </ResponsiveNavLink>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
 
                         </>
                     )}
@@ -150,22 +167,51 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                                         Categories
                                     </ResponsiveNavLink>
 
-                                    <ResponsiveNavLink
-                                        href={route('manage-role.index')}
-                                        className="text-foreground transition-colors hover:text-foreground"
-                                        active={route().current('manage-role*')}
-                                    >
-                                        Manage Role
-                                    </ResponsiveNavLink>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant={"ghost"} size={"sm"}
+                                            className='justify-start'>
+                                                Manage
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent>
+                                            <DropdownMenuLabel>
+                                                Menu Role & User
+                                            </DropdownMenuLabel>
+                                            <DropdownMenuSeparator />
 
-                                    <ResponsiveNavLink
-                                        href={route('listUsers')}
-                                        className="text-foreground transition-colors hover:text-foreground text-nowrap"
-                                        active={route().current('listUsers*')}
-                                    >
-                                        Manage Users
-                                    </ResponsiveNavLink>
+                                            <DropdownMenuItem asChild>
+                                                <ResponsiveNavLink
+                                                    href={route('manage-role.index')}
+                                                    className="text-foreground transition-colors hover:text-foreground text-nowrap"
+                                                    active={route().current('manage-role*')}
+                                                >
+                                                    Manage Role
+                                                </ResponsiveNavLink>
+                                            </DropdownMenuItem>
+
+                                            <DropdownMenuItem asChild>
+                                                <ResponsiveNavLink
+                                                    href={route('listUsers')}
+                                                    className="text-foreground transition-colors hover:text-foreground text-nowrap"
+                                                    active={route().current('listUsers*')}
+                                                >
+                                                    Manage Users
+                                                </ResponsiveNavLink>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </>
+                            )}
+
+                            {(isAdmin || isAuthor) && (
+                                <ResponsiveNavLink
+                                    href={route('article.index')}
+                                    className="text-foreground transition-colors hover:text-foreground"
+                                    active={route().current('article*')}
+                                >
+                                    Articles
+                                </ResponsiveNavLink>
                             )}
                         </nav>
                     </SheetContent>
@@ -177,6 +223,7 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                         <div className="relative">
                         </div>
                     </form>
+                    <ModeToggle />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="secondary" size="icon" className="rounded-full">

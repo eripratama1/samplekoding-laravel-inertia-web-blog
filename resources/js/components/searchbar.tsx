@@ -86,7 +86,7 @@ export default function SearchBar({ dataArticles = [] }: SearchBarProps) {
                   Menampilkan data pencarian artikel
                 */}
                 {searchArticles.map((article) => (
-                    <li className="px-4 py-2 hover:bg-gray-100" key={article.id}>
+                    <li className="px-4 py-2 hover:bg-gray-100 dark:text-black" key={article.id}>
                         <Link href={route('read', article.slug)}>
                             {article.title}
                         </Link>

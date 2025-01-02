@@ -1,3 +1,4 @@
+import { ModeToggle } from '@/components/mode-toggle'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink'
 import SearchBar from '@/components/searchbar'
 import { Button } from '@/components/ui/button'
@@ -29,7 +30,7 @@ export default function BlogLayout({ children, auth }: BlogLayoutProps) {
 
                     <ResponsiveNavLink
                         href={route('home')}
-                        active={route().current("home")}
+                        active={route().current("home") || route().current("read")}
                         className='flex items-center gap-3 rounded-lg px-3 py-2 my-1 text-muted-foreground transition-all hover:text-primary text-nowrap'
                     >
                         Article
@@ -37,7 +38,7 @@ export default function BlogLayout({ children, auth }: BlogLayoutProps) {
 
                     <ResponsiveNavLink
                         href={route('categories')}
-                        active={route().current("categories")}
+                        active={route().current("categories") || route().current("articlesByCategory")}
                         className='flex items-center gap-3 rounded-lg px-3 py-2 my-1 text-muted-foreground transition-all hover:text-primary text-nowrap'
                     >
                         Categories
@@ -72,10 +73,19 @@ export default function BlogLayout({ children, auth }: BlogLayoutProps) {
                             </Link>
 
                             <ResponsiveNavLink
-                                href='#'
+                                href={route('home')}
+                                active={route().current("home") || route().current("read")}
                                 className='flex items-center gap-3 rounded-lg px-3 py-2 my-1 text-muted-foreground transition-all hover:text-primary text-nowrap'
                             >
                                 Article
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink
+                                href={route('categories')}
+                                active={route().current("categories") || route().current("articlesByCategory")}
+                                className='flex items-center gap-3 rounded-lg px-3 py-2 my-1 text-muted-foreground transition-all hover:text-primary text-nowrap'
+                            >
+                                Categories
                             </ResponsiveNavLink>
                         </nav>
                     </SheetContent>
@@ -87,6 +97,8 @@ export default function BlogLayout({ children, auth }: BlogLayoutProps) {
                     <div className='w-full flex justify-end'>
                         <SearchBar />
                     </div>
+
+                    <ModeToggle />
 
                     {auth.user ? (
                         <React.Fragment>
