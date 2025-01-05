@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoleRequest;
 use App\Models\User;
+use App\Notifications\RoleRequestNotify;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
@@ -113,6 +114,7 @@ class RoleController extends Controller
          */
         $user = User::findOrFail($id);
         $user->syncRoles($request->input('roles'));
+        $user->notify(new RoleRequestNotify($user,'grant'));
         return to_route('listUsers');
     }
 

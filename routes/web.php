@@ -30,6 +30,9 @@ Route::post('/comments', [CommentController::class, 'store']);
 
 
 Route::middleware('auth')->group(function () {
+    Route::post('/become-author', [ProfileController::class, 'becomeAuthor'])
+        ->name('become-author');
+
     Route::get('/dashboard', function () {
         // Mendapatkan data user yang sedang login menggunakan helper auth()
         $user = auth()->user();
@@ -76,7 +79,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/user/{id}/role/{roleId}', [RoleController::class, 'removeRole'])->name('removeRole');
     });
 
-    Route::middleware('role:Admin|Author')->group(function(){
+    Route::middleware('role:Admin|Author')->group(function () {
         Route::resource('article', ArticleController::class);
     });
 });

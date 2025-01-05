@@ -13,7 +13,7 @@ class BlogController extends Controller
 {
     public function home()
     {
-        $articles = Article::with(['category', 'user'])->latest()->paginate(4);
+        $articles = Article::with(['category', 'user'])->latest()->paginate(3);
         return Inertia::render('Blog/Home', [
             'articles' => $articles
         ]);

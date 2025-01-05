@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { DollarSign } from 'lucide-react';
 import { PageProps } from '@/types';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 // Menerima props 'auth' yang bertipe 'PageProps'
 // Tipe PageProps mendefinisikan struktur data yang diterima oleh auth,
@@ -13,6 +14,17 @@ export default function Dashboard({ auth }: PageProps) {
     const checkRole = auth.user.roles.length == 0;
     console.log("Result checkRole", checkRole);
 
+    const { post } = useForm();
+    const handleRequestRole = () => {
+        post(route('become-author'), {
+            onSuccess: () => {
+                toast.success("Request sent")
+            },
+            onError: () => {
+                toast.error("Failed to sent a request")
+            }
+        })
+    }
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -24,7 +36,9 @@ export default function Dashboard({ auth }: PageProps) {
         >
             <Head title="Dashboard" />
 
-            {checkRole && <Button>Become an article writer</Button>}
+            {checkRole && <Button className='mx-auto px-4' onClick={handleRequestRole}>
+                Become an article writer
+            </Button>}
 
             <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
                 <Card x-chunk="dashboard-01-chunk-0">
