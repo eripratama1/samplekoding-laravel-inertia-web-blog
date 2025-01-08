@@ -15,7 +15,8 @@ class BlogController extends Controller
     {
         $articles = Article::with(['category', 'user'])->latest()->paginate(3);
         return Inertia::render('Blog/Home', [
-            'articles' => $articles
+            'articles' => $articles,
+            'roles' => auth()->check() ? auth()->user()->getRoleNames() : []
         ]);
     }
 
@@ -23,7 +24,8 @@ class BlogController extends Controller
     {
         $categories = Category::get();
         return Inertia::render('Blog/Categories', [
-            'categories' => $categories
+            'categories' => $categories,
+            'roles' => auth()->check() ? auth()->user()->getRoleNames() : []
         ]);
     }
 
@@ -42,7 +44,8 @@ class BlogController extends Controller
         $articles = $category->articles()->with(['category', 'user'])->latest()->paginate(4);
         return Inertia::render('Blog/ArticleByCategory', [
             'articles' => $articles,
-            'category' => $category
+            'category' => $category,
+            'roles' => auth()->check() ? auth()->user()->getRoleNames() : []
         ]);
     }
 
@@ -69,7 +72,8 @@ class BlogController extends Controller
         return Inertia::render('Blog/DetailArticle', [
             'article' => $article,
             'relatedArticles' => $relatedArticles,
-            'comments' => $comments
+            'comments' => $comments,
+            'roles' => auth()->check() ? auth()->user()->getRoleNames() : []
         ]);
     }
 

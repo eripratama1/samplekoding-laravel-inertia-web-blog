@@ -7,9 +7,12 @@ import Authenticated from '@/Layouts/AuthenticatedLayout'
 import { Head, useForm } from '@inertiajs/react'
 import React, { FormEventHandler } from 'react'
 import { toast } from 'sonner'
-import { PageProps } from '@/types'
+import { Notifications, PageProps } from '@/types'
 
-export default function Create({ auth }: PageProps) {
+interface CreateCategoryProps extends PageProps {
+    notifications:Notifications[]
+}
+export default function Create({ auth,notifications }: CreateCategoryProps) {
 
     // Inisialisasi form menggunakan useForm dengan nilai awal untuk field 'title' string kosong
     const { data, setData, post, processing, errors } = useForm({
@@ -34,7 +37,7 @@ export default function Create({ auth }: PageProps) {
     }
 
     return (
-        <Authenticated user={auth.user}>
+        <Authenticated user={auth.user} notifications={notifications}>
             <Head title='Create new Category' />
             <div className='flex justify-center items-center my-6'>
                 <Card className='max-w-lg w-full'>

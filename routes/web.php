@@ -5,6 +5,7 @@ use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NotifController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -32,10 +33,12 @@ Route::post('/comments', [CommentController::class, 'store']);
 Route::middleware('auth')->group(function () {
     Route::post('/become-author', [ProfileController::class, 'becomeAuthor'])
         ->name('become-author');
+    Route::post('notifications/{id}/mark-as-read', [NotifController::class, 'markAsRead'])->name('markAsRead');
 
     Route::get('/dashboard', function () {
         // Mendapatkan data user yang sedang login menggunakan helper auth()
         $user = auth()->user();
+        $notifications = auth()->user()->unreadNOtifications;
         return Inertia::render('Dashboard', [
             'auth' => [
                 // Mengirimkan data user yang sedang login
@@ -44,7 +47,9 @@ Route::middleware('auth')->group(function () {
                 // Mengirimkan daftar role yang dimiliki user menggunakan metode getRoleNames()
                 // Metode ini berasal dari Spatie Role Permission
                 'roles' => $user->getRoleNames(),
-            ]
+            ],
+
+            'notifications' => $notifications
         ]);
     })->name('dashboard');
 
@@ -53,6 +58,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', function () {
             // Mendapatkan data user yang sedang login menggunakan helper auth()
             $user = auth()->user();
+
+            // Mengambil semua notifikasi yang belum dibaca untuk pengguna yang sedang login.
+            $notifications = auth()->user()->unreadNotifications;
             return Inertia::render('Dashboard', [
                 'auth' => [
                     // Mengirimkan data user yang sedang login
@@ -61,7 +69,8 @@ Route::middleware('auth')->group(function () {
                     // Mengirimkan daftar role yang dimiliki user menggunakan metode getRoleNames()
                     // Metode ini berasal dari Spatie Role Permission
                     'roles' => $user->getRoleNames(),
-                ]
+                ],
+                'notifications' => $notifications
             ]);
         })->name('dashboard-admin');
 

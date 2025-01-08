@@ -20,13 +20,20 @@ class CategoryController extends Controller
          * dan method paginate
          */
         $search = $request->input('search');
+
+        /**
+         * / Mengambil semua notifikasi yang belum dibaca untuk pengguna yang sedang login.
+         */
+        $notifications = auth()->user()->unreadNOtifications;
+
         $categories = Category::query()
         ->when($search,function($query,$search){
             return $query->where('title','like',"%{$search}%");
         })->latest()->paginate(3);
 
         return Inertia::render('Backend/Category/Index',[
-            'categories' => $categories
+            'categories' => $categories,
+            'notifications' => $notifications
         ]);
     }
 
@@ -35,7 +42,10 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Backend/Category/Create');
+        $notifications = auth()->user()->unreadNOtifications;
+        return Inertia::render('Backend/Category/Create',[
+            'notifications' => $notifications
+        ]);
     }
 
     /**
@@ -61,8 +71,10 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
+        $notifications = auth()->user()->unreadNOtifications;
         return Inertia::render('Backend/Category/Edit',[
-            'category' => Category::findOrFail($id)
+            'category' => Category::findOrFail($id),
+            'notifications' => $notifications
         ]);
     }
 

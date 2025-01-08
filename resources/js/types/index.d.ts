@@ -28,7 +28,7 @@ export interface Article {
     category: Category;
     category_id: number;
     user?: User;
-    created_at:string;
+    created_at: string;
 }
 
 export interface PaginationData<T> {
@@ -43,14 +43,24 @@ export interface PaginationData<T> {
 }
 
 export interface Comment {
-    id:number;
-    content:string;
-    created_at:string;
-    article_id:number;
-    user_id:number;
-    parent_id:number | null;
-    user?:User;
-    replies?:Comment[]
+    id: number;
+    content: string;
+    created_at: string;
+    article_id: number;
+    user_id: number;
+    parent_id: number | null;
+    user?: User;
+    replies?: Comment[]
+}
+
+export interface Notifications {
+    id: string;
+    type: string;
+    data: {
+        article_title: string;
+        message: string;
+    }
+    created_at: string
 }
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {

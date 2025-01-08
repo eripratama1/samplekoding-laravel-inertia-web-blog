@@ -6,7 +6,7 @@ import Authenticated from '@/Layouts/AuthenticatedLayout'
 import { Head, Link, router } from '@inertiajs/react'
 import React from 'react'
 import { toast } from 'sonner'
-import { Category, PageProps } from '@/types'
+import { Category, Notifications, PageProps } from '@/types'
 import DataTable from '@/components/datatable'
 import { ColumnDef } from '@tanstack/react-table'
 import { Input } from '@/components/ui/input'
@@ -28,10 +28,11 @@ interface CategoryIndexProps extends PageProps {
         path: string;
         prev_page_url: string | null;
         next_page_url: string | null;
-    }
+    },
+    notifications?: Notifications[]
 }
 
-export default function Index({ categories, auth }: CategoryIndexProps) {
+export default function Index({ categories, auth,notifications = [] }: CategoryIndexProps) {
 
     // console.log('result props category', category);
 
@@ -106,7 +107,7 @@ export default function Index({ categories, auth }: CategoryIndexProps) {
     ]
 
     return (
-        <Authenticated user={auth.user}>
+        <Authenticated user={auth.user} notifications={notifications}>
             <Head title='List Kategori' />
             <div className='flex justify-center items-center my-10'>
                 <Card className='max-w-xl w-full h-full'>

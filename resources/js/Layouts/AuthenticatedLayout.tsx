@@ -10,8 +10,9 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Link, usePage } from '@inertiajs/react';
 import { CircleUser, Menu, Package2, Search } from 'lucide-react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
-import { User } from '@/types';
+import { Notifications, User } from '@/types';
 import { ModeToggle } from '@/components/mode-toggle';
+import NotifComponent from '@/components/notifications';
 
 
 // Interface ini bertujuan untuk menentukan tipe props yang akan diterima oleh komponen autentikasi
@@ -24,8 +25,9 @@ interface AuthenticatedProps extends PropsWithChildren {
     // 'ReactNode' memungkinkan berbagai tipe elemen React atau elemen HTML yang bisa dipakai sebagai header
     user: User
     header?: ReactNode
+    notifications?: Notifications[]
 }
-export default function Authenticated({ header, children, user }: AuthenticatedProps) {
+export default function Authenticated({ header, children, user, notifications = [] }: AuthenticatedProps) {
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
@@ -45,8 +47,8 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
     // Jika tidak ada atau 'roles' kosong, maka 'isAdmin' akan bernilai false
     // console.log("User Data", isAdmin, user);
 
-    console.log("Result isAuthor", isAuthor);
-
+    // console.log("Result isAuthor", isAuthor);
+    console.log("cek props notif", notifications);
 
     return (
 
@@ -170,7 +172,7 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <Button variant={"ghost"} size={"sm"}
-                                            className='justify-start'>
+                                                className='justify-start'>
                                                 Manage
                                             </Button>
                                         </DropdownMenuTrigger>
@@ -223,7 +225,10 @@ export default function Authenticated({ header, children, user }: AuthenticatedP
                         <div className="relative">
                         </div>
                     </form>
+
                     <ModeToggle />
+                    <NotifComponent notifications={notifications} user={user}/>
+
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="secondary" size="icon" className="rounded-full">

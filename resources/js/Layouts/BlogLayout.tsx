@@ -1,4 +1,5 @@
 import { ModeToggle } from '@/components/mode-toggle'
+import NotifComponent from '@/components/notifications'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink'
 import SearchBar from '@/components/searchbar'
 import { Button } from '@/components/ui/button'
@@ -117,8 +118,14 @@ export default function BlogLayout({ children, auth }: BlogLayoutProps) {
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem>
-                                        <Link href={route('dashboard')} as="button">
-                                            Dashboard
+                                        <Link
+                                            href={auth.user.roles?.some(role => role.name === 'Admin') ?
+                                                route('dashboard-admin') : route('dashboard')
+                                            }
+                                            as="button">
+                                            {auth.user.roles?.some(role => role.name === 'Admin') ?
+                                                'Dashboard Admin' : 'Dashboard'
+                                            }
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />

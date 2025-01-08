@@ -2,17 +2,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { DollarSign } from 'lucide-react';
-import { PageProps } from '@/types';
+import { Notifications, PageProps } from '@/types';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 // Menerima props 'auth' yang bertipe 'PageProps'
 // Tipe PageProps mendefinisikan struktur data yang diterima oleh auth,
 // yang berisi informasi tentang pengguna yang login.
-export default function Dashboard({ auth }: PageProps) {
+
+interface DashboardProps extends PageProps {
+    notifications: Notifications[]
+}
+
+export default function Dashboard({ auth, notifications }: DashboardProps) {
+
+    console.log("cek props notif", notifications);
 
     const checkRole = auth.user.roles.length == 0;
-    console.log("Result checkRole", checkRole);
+    //console.log("Result checkRole", checkRole);
 
     const { post } = useForm();
     const handleRequestRole = () => {
@@ -27,6 +34,7 @@ export default function Dashboard({ auth }: PageProps) {
     }
     return (
         <AuthenticatedLayout
+            notifications={notifications}
             user={auth.user}
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
