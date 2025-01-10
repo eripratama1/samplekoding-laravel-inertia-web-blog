@@ -16,7 +16,8 @@ class BlogController extends Controller
         $articles = Article::with(['category', 'user'])->latest()->paginate(3);
         return Inertia::render('Blog/Home', [
             'articles' => $articles,
-            'roles' => auth()->check() ? auth()->user()->getRoleNames() : []
+            'roles' => auth()->check() ? auth()->user()->getRoleNames() : [],
+            'notifications' => auth()->check() ? auth()->user()->unreadNotifications : []
         ]);
     }
 
@@ -25,7 +26,8 @@ class BlogController extends Controller
         $categories = Category::get();
         return Inertia::render('Blog/Categories', [
             'categories' => $categories,
-            'roles' => auth()->check() ? auth()->user()->getRoleNames() : []
+            'roles' => auth()->check() ? auth()->user()->getRoleNames() : [],
+            'notifications' => auth()->check() ? auth()->user()->unreadNotifications : []
         ]);
     }
 
@@ -45,7 +47,8 @@ class BlogController extends Controller
         return Inertia::render('Blog/ArticleByCategory', [
             'articles' => $articles,
             'category' => $category,
-            'roles' => auth()->check() ? auth()->user()->getRoleNames() : []
+            'roles' => auth()->check() ? auth()->user()->getRoleNames() : [],
+            'notifications' => auth()->check() ? auth()->user()->unreadNotifications : []
         ]);
     }
 
@@ -64,30 +67,31 @@ class BlogController extends Controller
          *  artikel yang sedang ditampilkan.
          *  Kode ini akan mengambil semua komentar yang memiliki article_id yang sama dengan
          *  id artikel yang sedang ditampilkan.
-        */
-        $comments = Comment::where('article_id',$article->id)->with(['article','user'])
-        ->latest()
-        ->get();
+         */
+        $comments = Comment::where('article_id', $article->id)->with(['article', 'user'])
+            ->latest()
+            ->get();
         // mengirimkan data artikel dan artikel terkait ke komponen "Blog/DetailArticle".
         return Inertia::render('Blog/DetailArticle', [
             'article' => $article,
             'relatedArticles' => $relatedArticles,
             'comments' => $comments,
-            'roles' => auth()->check() ? auth()->user()->getRoleNames() : []
+            'roles' => auth()->check() ? auth()->user()->getRoleNames() : [],
+            'notifications' => auth()->check() ? auth()->user()->unreadNotifications : []
         ]);
     }
 
     public function searchArticle(Request $request)
     {
-         // Mengambil input query dari request
+        // Mengambil input query dari request
         $query = $request->input('query');
 
-         /**
-          * Melakukan pencarian artikel jika query tidak kosong
-          * Menggunakan metode when() untuk memeriksa apakah query tidak kosong
-          * Jika tidak kosong maka akan mencari artikel berdasarkan judul dan kategori
-          * Menggunakan whereHas() untuk mencari artikel berdasarkan judul kategori
-          */
+        /**
+         * Melakukan pencarian artikel jika query tidak kosong
+         * Menggunakan metode when() untuk memeriksa apakah query tidak kosong
+         * Jika tidak kosong maka akan mencari artikel berdasarkan judul dan kategori
+         * Menggunakan whereHas() untuk mencari artikel berdasarkan judul kategori
+         */
 
         $articles = Article::when($query, function ($queryBuilder) use ($query) {
             return $queryBuilder->where('title', 'like', "%{$query}%")

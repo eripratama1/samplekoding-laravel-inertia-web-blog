@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import BlogLayout from '@/Layouts/BlogLayout'
-import { Article, Comment, PageProps } from '@/types'
+import { Article, Comment, Notifications, PageProps } from '@/types'
 import { Head, Link, useForm } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
 import parse from 'html-react-parser';
@@ -13,7 +13,8 @@ import { id } from "date-fns/locale"
 interface DetailArticleProps extends PageProps {
     article: Article;
     relatedArticles: Article[]
-    comments?: Comment[]
+    comments?: Comment[],
+    notifications?: Notifications[]
 }
 
 /**
@@ -161,7 +162,7 @@ function ReplyForm({ articleId, parentId, handleCancel }: ReplyFormProps) {
                     Submit Reply
                 </Button>
                 <Button className='mt-2 px-4 py-3 bg-slate-500 text-white rounded-md hover:bg-slate-600'
-                onClick={handleCancel}>
+                    onClick={handleCancel}>
                     Cancel
                 </Button>
             </div>
@@ -214,7 +215,7 @@ function CommentForm({ articleId, articleSlug, authorId, authorName }: CommentFo
     )
 }
 
-export default function DetailArticle({ article, relatedArticles, auth, comments = [] }: DetailArticleProps) {
+export default function DetailArticle({ article, relatedArticles, auth, comments = [], notifications = [] }: DetailArticleProps) {
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -230,7 +231,7 @@ export default function DetailArticle({ article, relatedArticles, auth, comments
     const commentsMap = buildCommentTree(comments)
 
     return (
-        <BlogLayout auth={auth}>
+        <BlogLayout auth={auth} notifications={notifications}>
             <Head title={article.title} />
             <div className='container mx-auto flex flex-col lg:flex-row gap-4 px-4 lg:px-6'>
                 <div className='w-full lg:w-9/12'>

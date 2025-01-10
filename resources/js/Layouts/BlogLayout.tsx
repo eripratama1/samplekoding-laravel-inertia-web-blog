@@ -5,16 +5,17 @@ import SearchBar from '@/components/searchbar'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { PageProps } from '@/types'
+import { Notifications, PageProps } from '@/types'
 import { Link } from '@inertiajs/react'
 import { Bell, CircleUser, Menu, Newspaper, User2 } from 'lucide-react'
 import React from 'react'
 
 interface BlogLayoutProps extends PageProps {
     children: React.ReactNode
+    notifications?: Notifications[]
 }
 
-export default function BlogLayout({ children, auth }: BlogLayoutProps) {
+export default function BlogLayout({ children, auth, notifications = [] }: BlogLayoutProps) {
     return (
         <div className='flex min-h-screen w-full flex-col'>
             <header className='sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6'>
@@ -103,6 +104,9 @@ export default function BlogLayout({ children, auth }: BlogLayoutProps) {
 
                     {auth.user ? (
                         <React.Fragment>
+
+                            <NotifComponent user={auth.user} notifications={notifications} />
+
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant={"secondary"} size={"icon"} className='rounde-full'>

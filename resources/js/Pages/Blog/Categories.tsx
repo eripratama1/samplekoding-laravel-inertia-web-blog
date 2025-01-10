@@ -1,14 +1,15 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import BlogLayout from '@/Layouts/BlogLayout'
-import { Category, PageProps } from '@/types'
+import { Category, Notifications, PageProps } from '@/types'
 import { Head, Link } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react'
 
 interface CategoryProps extends PageProps {
-    categories: Category[]
+    categories: Category[],
+    notifications?: Notifications[]
 }
 
-export default function Categories({ categories, auth }: CategoryProps) {
+export default function Categories({ categories, auth, notifications = [] }: CategoryProps) {
 
     console.log("cek props", categories);
 
@@ -20,7 +21,7 @@ export default function Categories({ categories, auth }: CategoryProps) {
     }, [])
 
     return (
-        <BlogLayout auth={auth}>
+        <BlogLayout auth={auth} notifications={notifications}>
             <Head title='Categories' />
             <div className='container mx-auto p-4'>
                 {loading ? (

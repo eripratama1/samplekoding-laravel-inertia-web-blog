@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import BlogLayout from "@/Layouts/BlogLayout";
-import { Article, Category, PageProps } from "@/types";
+import { Article, Category, Notifications, PageProps } from "@/types";
 import { Head, Link, router } from "@inertiajs/react";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -14,10 +14,11 @@ interface ArticleByCategoryProps extends PageProps {
         current_page: number;
         last_page: number;
     },
-    category: Category
+    category: Category,
+    notifications?: Notifications[]
 }
 
-export default function ArticleByCategory({ articles, category, auth }: ArticleByCategoryProps) {
+export default function ArticleByCategory({ articles, category, auth, notifications = [] }: ArticleByCategoryProps) {
 
     const [dataArticles, setDataArticles] = useState<Article[]>(articles.data)
     const [currentPage, setCurrentPage] = useState(articles.current_page)
@@ -63,7 +64,7 @@ export default function ArticleByCategory({ articles, category, auth }: ArticleB
         })
     }
     return (
-        <BlogLayout auth={auth}>
+        <BlogLayout auth={auth} notifications={notifications}>
             <Head title={`Article ` + category.title} />
             <div className='container mx-auto flex flex-col lg:flex-row gap-4'>
                 <div className='w-full'>

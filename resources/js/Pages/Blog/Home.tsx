@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import BlogLayout from '@/Layouts/BlogLayout'
-import { Article, PageProps } from '@/types'
+import { Article, Notifications, PageProps } from '@/types'
 import { Head, Link, router } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
@@ -14,10 +14,11 @@ interface HomeProps extends PageProps {
         data: Article[],
         current_page: number;
         last_page: number;
-    }
+    },
+    notifications?: Notifications[]
 }
 
-export default function Home({ articles, auth }: HomeProps) {
+export default function Home({ articles, auth,notifications = [] }: HomeProps) {
     // console.log("result props", articles.last_page);
 
     /** Inisialisasi state untuk menyimpan data artikel */
@@ -66,7 +67,7 @@ export default function Home({ articles, auth }: HomeProps) {
     }
 
     return (
-        <BlogLayout auth={auth}>
+        <BlogLayout auth={auth} notifications={notifications}>
             <Head title='Home' />
             <div className='container mx-auto flex flex-col lg:flex-row gap-4'>
                 <div className='w-full'>
