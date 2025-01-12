@@ -57,7 +57,7 @@ export interface Notifications {
     id: string;
     type: string;
     data: {
-        article_title: string;
+        article_title: any;
         message: string;
     }
     created_at: string

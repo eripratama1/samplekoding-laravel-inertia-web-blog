@@ -14,9 +14,10 @@ export default function NotifComponent({ notifications = [], user }: NotifCompon
 
     const { get, post } = useForm()
     const isAdmin = user.roles?.some(role => role.name === 'Admin');
+    const isAuthor = user.roles?.some(role => role.name === 'Author');
 
-    const handleMarkAsRead = (notifId:string) => {
-        post(route('markAsRead',notifId))
+    const handleMarkAsRead = (notifId: string) => {
+        post(route('markAsRead', notifId))
     }
 
     const handleManageRoleRequest = () => {
@@ -66,9 +67,43 @@ export default function NotifComponent({ notifications = [], user }: NotifCompon
                                                 {isAdmin && (
                                                     <Button
                                                         size={"sm"}
-                                                        onClick={()=> handleManageRoleRequest()}
+                                                        onClick={() => handleManageRoleRequest()}
                                                     >
                                                         Go to manage users
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        </React.Fragment>
+                                    )}
+
+                                    {notif.type === 'App\\Notifications\\CommentNotification' && (
+                                        <React.Fragment>
+                                            <span>Notifications</span>
+                                            <span>{notif.data.message}</span>
+                                            <div className='mt-2 flex gap-2'>
+                                                <Button
+                                                    variant={"outline"}
+                                                    size={"sm"}
+                                                    onClick={() => handleMarkAsRead(notif.id)}
+                                                >
+                                                    Mark As Read
+                                                </Button>
+
+                                                {(isAdmin || isAuthor) && (
+                                                    <Button
+                                                        size={"sm"}
+                                                        onClick={() => get(route("article.show", notif.data.article_title.slug))}
+                                                    >
+                                                        Go to show article
+                                                    </Button>
+                                                )}
+
+                                                {user.roles.length < 1 && (
+                                                    <Button
+                                                        size={"sm"}
+                                                        onClick={() => get(route("read", notif.data.article_title.slug))}
+                                                    >
+                                                        Show article
                                                     </Button>
                                                 )}
                                             </div>
